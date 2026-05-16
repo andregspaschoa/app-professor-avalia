@@ -7,8 +7,10 @@ import 'package:hive_flutter/hive_flutter.dart';
 abstract final class HiveSetup {
   static Future<void> init() async {
     await Hive.initFlutter();
-    // Adapters serão registrados aqui conforme features forem adicionadas.
-    // Exemplo: Hive.registerAdapter(ScanResultAdapter());
+    // Dados armazenados como Map<String, dynamic> — sem hive_generator.
+    // Motivo: hive_generator usa source_gen ^1.0.0, incompatível com
+    // freezed que usa source_gen ^2.0.0. Decisão YAGNI para o MVP.
+    // Para migrar para adapters tipados: substituir Hive por Isar.
     await _openBoxes();
   }
 
