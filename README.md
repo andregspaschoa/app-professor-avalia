@@ -45,35 +45,38 @@
 
 ## Arquitetura
 
-**MVVM + Feature-first** com equilíbrio entre clean architecture e YAGNI.
+**MVVM + Feature-first** — separação clara de responsabilidades sem over-engineering (YAGNI).
 
 ```
 lib/
 ├── core/               # Infraestrutura compartilhada
 │   ├── theme/          # AppColors, AppTypography, AppTheme
-│   ├── error/          # Failures (sealed class)
+│   ├── error/          # sealed class Failure
 │   ├── network/        # DioClient + interceptors
 │   ├── storage/        # HiveSetup
 │   └── constants/      # AppConstants
-├── features/           # Uma pasta por domínio
-│   ├── auth/           # Login fake + sessão
-│   ├── wizard/         # Orquestra o fluxo step-by-step
-│   ├── escola/
-│   ├── turma/
-│   ├── avaliacao/
-│   ├── gabarito/       # Grid de respostas
-│   ├── scanner/        # Scanner fake animado
-│   └── dashboard/
+├── features/           # Uma pasta por domínio — MVVM flat
+│   ├── auth/           # auth_model · auth_repository · auth_viewmodel · login_screen
+│   ├── wizard/         # wizard_viewmodel · wizard_screen
+│   ├── escola/         # escola_model · escola_repository · escola_viewmodel · escola_screen
+│   ├── turma/          # turma_model · turma_repository · turma_viewmodel · turma_screen
+│   ├── avaliacao/      # avaliacao_model · avaliacao_repository · avaliacao_viewmodel · avaliacao_screen
+│   ├── gabarito/       # gabarito_model · gabarito_repository · gabarito_viewmodel · gabarito_screen
+│   ├── scanner/        # scanner_viewmodel · scanner_screen
+│   └── dashboard/      # dashboard_repository · dashboard_viewmodel · dashboard_screen
 └── shared/             # Widgets e utilitários reutilizáveis
 ```
 
-Cada feature segue a estrutura:
+Cada feature segue o padrão MVVM flat — sem subcamadas desnecessárias:
 ```
 feature/
-├── data/         # Implementação: datasource (JSON mock) + repository impl
-├── domain/       # Contratos: models (freezed) + interface do repository
-└── presentation/ # UI: screen + ViewModel (Riverpod AsyncNotifier)
+├── {feature}_model.dart       # M: classe de dados (Freezed)
+├── {feature}_repository.dart  # M: fonte de dados (JSON mock → futuramente API)
+├── {feature}_viewmodel.dart   # VM: estado + lógica (@riverpod AsyncNotifier)
+└── {feature}_screen.dart      # V: UI pura (ConsumerWidget)
 ```
+
+> A `View` não contém lógica. O `ViewModel` não conhece widgets. O `Repository` não conhece Riverpod. Separação clara sem over-engineering.
 
 ---
 

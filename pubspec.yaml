@@ -78,7 +78,7 @@ flutter_launcher_icons:
   android: true
   ios: true
   image_path: "assets/icon/icon.png"
-  adaptive_icon_background: "#1A1A2E"
+  adaptive_icon_background: "#0D0D2B"
   adaptive_icon_foreground: "assets/icon/icon_foreground.png"
   remove_alpha_ios: true
 
@@ -87,11 +87,10 @@ flutter_launcher_icons:
 # Rode: dart run flutter_native_splash:create
 # ---------------------------------------------------------------------------
 flutter_native_splash:
-  color: "#1A1A2E"
-  image: assets/splash/logo.png
+  color: "#0D0D2B"
   android_12:
-    color: "#1A1A2E"
-    icon_background_color: "#1A1A2E"
+    color: "#0D0D2B"
+    icon_background_color: "#0D0D2B"
   web: false
 
 flutter:
