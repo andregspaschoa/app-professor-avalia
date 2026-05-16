@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:go_router/go_router.dart';
+
+import '../../core/router/app_router.dart';
 
 /// Camada 2 da splash — animada (Flutter).
 ///
@@ -7,10 +10,10 @@ import 'package:flutter/services.dart';
 /// (fundo sólido #0D0D2B que aparece antes do Flutter carregar).
 ///
 /// A transição é contínua: mesmo fundo + logo que faz fade-in + scale.
-/// Ao final da animação, navega para '/login'.
+/// Ao final da animação, navega para [AppRoutes.login] via go_router.
 ///
-/// TODO(nav): substituir Navigator.pushReplacementNamed por
-/// context.go('/login') quando go_router for configurado na feature 1.2.
+/// A decisão de ir para '/login' ou direto para '/wizard' (sessão ativa)
+/// será delegada ao redirect do AppRouter na Fase 2 (AuthViewModel).
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
 
@@ -64,7 +67,7 @@ class _SplashScreenState extends State<SplashScreen>
 
   void _navigateNext() {
     if (!mounted) return;
-    Navigator.of(context).pushReplacementNamed('/login');
+    context.go(AppRoutes.login);
   }
 
   @override

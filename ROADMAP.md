@@ -21,7 +21,7 @@
 
 ---
 
-## Fase 1 — Splash Animada + Navegação Base
+## ✅ Fase 1 — Splash Animada + Navegação Base _(concluída)_
 
 | # | Feature | Execução | Commit |
 |---|---|---|---|

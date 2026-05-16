@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import 'core/router/app_router.dart';
 import 'core/theme/app_theme.dart';
-import 'features/splash/splash_screen.dart';
 
 /// Widget raiz do app.
 ///
@@ -10,45 +10,23 @@ import 'features/splash/splash_screen.dart';
 /// - deixar main.dart como puro entry point (bootstrap);
 /// - facilitar widget tests que precisam de ProfessorAvaliaApp;
 /// - centralizar a configuração do MaterialApp em um único lugar.
-class ProfessorAvaliaApp extends StatelessWidget {
+///
+/// Usa [ConsumerWidget] para observar o [appRouterProvider] — necessário
+/// para que o redirect do go_router acesse providers de auth na Fase 2.
+class ProfessorAvaliaApp extends ConsumerWidget {
   const ProfessorAvaliaApp({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
+  Widget build(BuildContext context, WidgetRef ref) {
+    final router = ref.watch(appRouterProvider);
+    return MaterialApp.router(
       title: 'Professor Avalia',
       debugShowCheckedModeBanner: false,
       theme: AppTheme.light,
       darkTheme: AppTheme.dark,
       themeMode: ThemeMode.system,
-      // TODO(nav): substituir por GoRouter e remover routes/home na feature 1.2
-      home: const SplashScreen(),
-      routes: {
-        '/login': (_) => const _LoginPlaceholder(),
-      },
+      routerConfig: router,
     );
   }
 }
 
-/// Placeholder temporário para a rota /login.
-/// Será substituído por LoginScreen na Fase 2 (feat: auth).
-class _LoginPlaceholder extends StatelessWidget {
-  const _LoginPlaceholder();
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-      body: const Center(
-        child: Text(
-          'Login — em breve',
-          style: TextStyle(fontSize: 18),
-        ),
-      ),
-    );
-  }
-}
-
-// Reexporta ProviderScope para uso em testes de widget que
-// precisam instanciar ProfessorAvaliaApp com Riverpod.
-typedef AppWithProviderScope = ProviderScope;
