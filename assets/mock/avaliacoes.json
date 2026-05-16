@@ -1,0 +1,53 @@
+[
+  {
+    "id": "ava_01",
+    "turma_id": "tur_01",
+    "professor_id": "prof_01",
+    "titulo": "Prova Bimestral - Matemática",
+    "disciplina": "Matemática",
+    "bimestre": 1,
+    "tipo": "objetiva",
+    "data_aplicacao": "2025-03-15",
+    "total_questoes": 10,
+    "nota_maxima": 10.0,
+    "peso_por_questao": 1.0,
+    "status": "aplicada",
+    "gabarito": ["C", "B", "D", "A", "E", "B", "C", "D", "A", "B"],
+    "created_at": "2025-03-10T08:00:00Z",
+    "updated_at": "2025-03-15T14:00:00Z"
+  },
+  {
+    "id": "ava_02",
+    "turma_id": "tur_01",
+    "professor_id": "prof_01",
+    "titulo": "Simulado - Português",
+    "disciplina": "Português",
+    "bimestre": 1,
+    "tipo": "objetiva",
+    "data_aplicacao": "2025-04-10",
+    "total_questoes": 8,
+    "nota_maxima": 10.0,
+    "peso_por_questao": 1.25,
+    "status": "corrigida",
+    "gabarito": ["B", "C", "A", "D", "B", "C", "A", "D"],
+    "created_at": "2025-04-05T09:00:00Z",
+    "updated_at": "2025-04-10T16:30:00Z"
+  },
+  {
+    "id": "ava_03",
+    "turma_id": "tur_02",
+    "professor_id": "prof_01",
+    "titulo": "Prova Bimestral - Ciências",
+    "disciplina": "Ciências",
+    "bimestre": 1,
+    "tipo": "objetiva",
+    "data_aplicacao": "2025-03-20",
+    "total_questoes": 10,
+    "nota_maxima": 10.0,
+    "peso_por_questao": 1.0,
+    "status": "rascunho",
+    "gabarito": ["A", "B", "C", "D", "E", "A", "B", "C", "D", "E"],
+    "created_at": "2025-03-18T10:00:00Z",
+    "updated_at": "2025-03-18T10:00:00Z"
+  }
+]

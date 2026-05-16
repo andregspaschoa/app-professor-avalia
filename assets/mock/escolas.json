@@ -1,0 +1,29 @@
+[
+  {
+    "id": "esc_01",
+    "nome": "Escola Municipal Professor Carlos",
+    "codigo_inep": "35012345",
+    "municipio": "São Paulo",
+    "uf": "SP",
+    "tipo": "municipal",
+    "ativo": true
+  },
+  {
+    "id": "esc_02",
+    "nome": "Colégio Estadual Maria Helena",
+    "codigo_inep": "35023456",
+    "municipio": "Campinas",
+    "uf": "SP",
+    "tipo": "estadual",
+    "ativo": true
+  },
+  {
+    "id": "esc_03",
+    "nome": "Instituto Educacional Santo Antônio",
+    "codigo_inep": "35034567",
+    "municipio": "Guarulhos",
+    "uf": "SP",
+    "tipo": "privada",
+    "ativo": true
+  }
+]

@@ -1,0 +1,56 @@
+[
+  {
+    "id": "alu_01",
+    "turma_id": "tur_01",
+    "nome": "Ana Beatriz Silva",
+    "matricula": "20250001",
+    "data_nascimento": "2014-05-12",
+    "foto_url": null,
+    "ativo": true
+  },
+  {
+    "id": "alu_02",
+    "turma_id": "tur_01",
+    "nome": "Bruno Henrique Santos",
+    "matricula": "20250002",
+    "data_nascimento": "2014-08-23",
+    "foto_url": null,
+    "ativo": true
+  },
+  {
+    "id": "alu_03",
+    "turma_id": "tur_01",
+    "nome": "Carla Fernandes Lima",
+    "matricula": "20250003",
+    "data_nascimento": "2015-01-30",
+    "foto_url": null,
+    "ativo": true
+  },
+  {
+    "id": "alu_04",
+    "turma_id": "tur_02",
+    "nome": "Daniel Oliveira Costa",
+    "matricula": "20250004",
+    "data_nascimento": "2014-11-07",
+    "foto_url": null,
+    "ativo": true
+  },
+  {
+    "id": "alu_05",
+    "turma_id": "tur_02",
+    "nome": "Eduarda Martins Rocha",
+    "matricula": "20250005",
+    "data_nascimento": "2015-03-19",
+    "foto_url": null,
+    "ativo": true
+  },
+  {
+    "id": "alu_06",
+    "turma_id": "tur_03",
+    "nome": "Fernando Alves Pereira",
+    "matricula": "20250006",
+    "data_nascimento": "2013-09-04",
+    "foto_url": null,
+    "ativo": true
+  }
+]

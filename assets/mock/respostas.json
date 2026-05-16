@@ -1,0 +1,52 @@
+[
+  {
+    "id": "corr_001",
+    "avaliacao_id": "ava_01",
+    "aluno_id": "alu_01",
+    "professor_id": "prof_01",
+    "respostas_aluno": ["C", "B", "A", "A", "E", "B", "C", "D", "A", "B"],
+    "acertos": 8,
+    "nota_calculada": 8.0,
+    "status": "corrigida",
+    "origem": "scanner",
+    "scan": {
+      "imagem_path": "/data/user/0/com.app.professoravalia/cache/scan_001.jpg",
+      "confianca": 0.94,
+      "processado_em": "2025-03-15T10:30:00Z"
+    },
+    "revisado": false,
+    "created_at": "2025-03-15T10:30:00Z"
+  },
+  {
+    "id": "corr_002",
+    "avaliacao_id": "ava_01",
+    "aluno_id": "alu_02",
+    "professor_id": "prof_01",
+    "respostas_aluno": ["C", "B", "D", "A", "E", "B", "C", "D", "A", "B"],
+    "acertos": 10,
+    "nota_calculada": 10.0,
+    "status": "corrigida",
+    "origem": "manual",
+    "scan": null,
+    "revisado": true,
+    "created_at": "2025-03-15T11:00:00Z"
+  },
+  {
+    "id": "corr_003",
+    "avaliacao_id": "ava_01",
+    "aluno_id": "alu_03",
+    "professor_id": "prof_01",
+    "respostas_aluno": ["A", "B", "D", "A", "C", "B", "C", "D", "E", "B"],
+    "acertos": 5,
+    "nota_calculada": 5.0,
+    "status": "pendente",
+    "origem": "scanner",
+    "scan": {
+      "imagem_path": "/data/user/0/com.app.professoravalia/cache/scan_003.jpg",
+      "confianca": 0.71,
+      "processado_em": "2025-03-15T11:45:00Z"
+    },
+    "revisado": false,
+    "created_at": "2025-03-15T11:45:00Z"
+  }
+]

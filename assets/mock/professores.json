@@ -1,0 +1,14 @@
+[
+  {
+    "id": "prof_01",
+    "nome": "Carlos Alcântara",
+    "email": "professor_alcantara@demo.com",
+    "senha_hash": "demo_hash_1234",
+    "disciplinas": ["Matemática", "Física"],
+    "escola_ids": ["esc_01", "esc_02"],
+    "turma_ids": ["tur_01", "tur_02"],
+    "foto_url": null,
+    "ativo": true,
+    "created_at": "2025-01-10T08:00:00Z"
+  }
+]

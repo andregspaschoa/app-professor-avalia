@@ -1,0 +1,52 @@
+[
+  {
+    "id": "tur_01",
+    "escola_id": "esc_01",
+    "nome": "5º Ano A",
+    "serie": "5",
+    "turno": "matutino",
+    "ano_letivo": 2025,
+    "total_alunos": 3,
+    "ativo": true
+  },
+  {
+    "id": "tur_02",
+    "escola_id": "esc_01",
+    "nome": "5º Ano B",
+    "serie": "5",
+    "turno": "vespertino",
+    "ano_letivo": 2025,
+    "total_alunos": 2,
+    "ativo": true
+  },
+  {
+    "id": "tur_03",
+    "escola_id": "esc_02",
+    "nome": "6º Ano A",
+    "serie": "6",
+    "turno": "matutino",
+    "ano_letivo": 2025,
+    "total_alunos": 1,
+    "ativo": true
+  },
+  {
+    "id": "tur_04",
+    "escola_id": "esc_02",
+    "nome": "6º Ano B",
+    "serie": "6",
+    "turno": "vespertino",
+    "ano_letivo": 2025,
+    "total_alunos": 0,
+    "ativo": true
+  },
+  {
+    "id": "tur_05",
+    "escola_id": "esc_03",
+    "nome": "7º Ano Único",
+    "serie": "7",
+    "turno": "matutino",
+    "ano_letivo": 2025,
+    "total_alunos": 0,
+    "ativo": true
+  }
+]
