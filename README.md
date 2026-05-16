@@ -55,25 +55,28 @@ lib/
 │   ├── network/        # DioClient + interceptors
 │   ├── storage/        # HiveSetup
 │   └── constants/      # AppConstants
-├── features/           # Uma pasta por domínio — MVVM flat
-│   ├── auth/           # auth_model · auth_repository · auth_viewmodel · login_screen
+├── features/           # Uma pasta por domínio — MVVM
+│   ├── auth/           # model/ · auth_repository · auth_viewmodel · login_screen
 │   ├── wizard/         # wizard_viewmodel · wizard_screen
-│   ├── escola/         # escola_model · escola_repository · escola_viewmodel · escola_screen
-│   ├── turma/          # turma_model · turma_repository · turma_viewmodel · turma_screen
-│   ├── avaliacao/      # avaliacao_model · avaliacao_repository · avaliacao_viewmodel · avaliacao_screen
-│   ├── gabarito/       # gabarito_model · gabarito_repository · gabarito_viewmodel · gabarito_screen
+│   ├── escola/         # model/ · escola_repository · escola_viewmodel · escola_screen
+│   ├── turma/          # model/ · turma_repository · turma_viewmodel · turma_screen
+│   ├── avaliacao/      # model/ · avaliacao_repository · avaliacao_viewmodel · avaliacao_screen
+│   ├── gabarito/       # model/ · gabarito_repository · gabarito_viewmodel · gabarito_screen
 │   ├── scanner/        # scanner_viewmodel · scanner_screen
 │   └── dashboard/      # dashboard_repository · dashboard_viewmodel · dashboard_screen
 └── shared/             # Widgets e utilitários reutilizáveis
 ```
 
-Cada feature segue o padrão MVVM flat — sem subcamadas desnecessárias:
+Cada feature segue o padrão MVVM — model em subpasta própria para isolar os arquivos gerados pelo Freezed:
 ```
 feature/
-├── {feature}_model.dart       # M: classe de dados (Freezed)
-├── {feature}_repository.dart  # M: fonte de dados (JSON mock → futuramente API)
-├── {feature}_viewmodel.dart   # VM: estado + lógica (@riverpod AsyncNotifier)
-└── {feature}_screen.dart      # V: UI pura (ConsumerWidget)
+├── model/
+│   ├── {feature}_model.dart         # M: classe de dados (Freezed)
+│   ├── {feature}_model.freezed.dart # gerado — build_runner
+│   └── {feature}_model.g.dart       # gerado — build_runner
+├── {feature}_repository.dart        # M: fonte de dados (JSON mock → futuramente API)
+├── {feature}_viewmodel.dart         # VM: estado + lógica (@riverpod AsyncNotifier)
+└── {feature}_screen.dart            # V: UI pura (ConsumerWidget)
 ```
 
 > A `View` não contém lógica. O `ViewModel` não conhece widgets. O `Repository` não conhece Riverpod. Separação clara sem over-engineering.
