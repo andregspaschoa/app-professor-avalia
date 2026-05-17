@@ -30,7 +30,7 @@
 
 ---
 
-## Fase 2 — Autenticação Fake
+## ✅ Fase 2 — Autenticação Fake _(concluída)_
 
 | # | Feature | Execução | Commit |
 |---|---|---|---|

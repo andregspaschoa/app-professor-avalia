@@ -6,8 +6,60 @@ import 'package:go_router/go_router.dart';
 import '../../features/auth/auth_viewmodel.dart';
 import '../../features/auth/login_screen.dart';
 import '../../features/auth/model/auth_model.dart';
+import '../../features/avaliacao/avaliacao_detail_screen.dart';
+import '../../features/avaliacao/avaliacao_screen.dart';
+import '../../features/escola/escola_screen.dart';
+import '../../features/gabarito/gabarito_professor_screen.dart';
+import '../../features/gabarito/gabarito_screen.dart';
+import '../../features/gabarito/resultado_final_screen.dart';
+import '../../features/home/home_screen.dart';
+import '../../features/scanner/resultado_screen.dart';
+import '../../features/scanner/scanner_screen.dart';
 import '../../features/splash/splash_screen.dart';
+import '../../features/turma/turma_screen.dart';
 import '../../features/wizard/wizard_screen.dart';
+import '../../features/wizard/wizard_viewmodel.dart';
+
+/// Chave do navigator aninhado do ShellRoute do wizard.
+///
+/// Permite ao [_WizardStepObserver] detectar pops dentro do shell e
+/// manter o [wizardViewModelProvider].step sincronizado.
+final _shellNavigatorKey = GlobalKey<NavigatorState>();
+
+/// Detecta pops dentro do navigator do wizard shell e atualiza o step
+/// no [wizardViewModelProvider] — necessário para o gesto/botão de sistema
+/// do Android funcionar corretamente sem precisar de PopScope no shell.
+class _WizardStepObserver extends NavigatorObserver {
+  _WizardStepObserver(this._ref);
+  final Ref _ref;
+
+  /// Mapeia nome ou path da rota para o step do wizard.
+  ///
+  /// go_router pode usar o campo `name` ou o `path` do GoRoute como
+  /// `route.settings.name` dependendo da versão — cobrimos os dois.
+  static int _stepFromName(String? name) => switch (name) {
+        AppRoutes.wizardEscolaName || AppRoutes.wizardEscola => 1,
+        AppRoutes.wizardTurmaName || AppRoutes.wizardTurma => 2,
+        AppRoutes.wizardAvaliacaoName || AppRoutes.wizardAvaliacao => 3,
+        AppRoutes.wizardAvaliacaoDetalheName ||
+              AppRoutes.wizardAvaliacaoDetalhe =>
+            4,
+        AppRoutes.wizardGabaritoProfName || AppRoutes.wizardGabaritoProf => 5,
+        AppRoutes.wizardGabaritoName || AppRoutes.wizardGabarito => 6,
+        _ => 1,
+      };
+
+  @override
+  void didPop(Route<dynamic> route, Route<dynamic>? previousRoute) {
+    final name = previousRoute?.settings.name;
+    // Só sincroniza se ainda há uma rota de wizard na pilha
+    if (name != null) {
+      _ref
+          .read(wizardViewModelProvider.notifier)
+          .advanceToStep(_stepFromName(name));
+    }
+  }
+}
 
 /// Provedor do GoRouter.
 ///
@@ -33,9 +85,70 @@ final appRouterProvider = Provider<GoRouter>((ref) {
         builder: (context, state) => const LoginScreen(),
       ),
       GoRoute(
-        path: AppRoutes.wizard,
-        name: AppRoutes.wizardName,
-        builder: (context, state) => const WizardScreen(),
+        path: AppRoutes.home,
+        name: AppRoutes.homeName,
+        builder: (context, state) => const HomeScreen(),
+      ),
+      // ── Scanner (fora do wizard shell) ──────────────────────────────────────
+      GoRoute(
+        path: AppRoutes.scanner,
+        name: AppRoutes.scannerName,
+        builder: (context, state) => const ScannerScreen(),
+      ),
+      GoRoute(
+        path: AppRoutes.scannerResultado,
+        name: AppRoutes.scannerResultadoName,
+        builder: (context, state) => const ResultadoScreen(),
+      ),
+      // ── Wizard shell ────────────────────────────────────────────────────────
+      // O ShellRoute envolve todas as sub-rotas do wizard com o Scaffold
+      // compartilhado (AppBar + LinearProgressIndicator).
+      // A primeira rota (/wizard/escola) é o ponto de entrada do wizard.
+      // ── Wizard shell ────────────────────────────────────────────────────────
+      // O ShellRoute envolve todas as sub-rotas do wizard com o Scaffold
+      // compartilhado (AppBar + LinearProgressIndicator).
+      // O step é gerenciado pelo WizardViewModel — não pelo estado da rota.
+      ShellRoute(
+        navigatorKey: _shellNavigatorKey,
+        observers: [_WizardStepObserver(ref)],
+        builder: (context, state, child) => WizardScreen(child: child),
+        routes: [
+          GoRoute(
+            path: AppRoutes.wizardEscola,
+            name: AppRoutes.wizardEscolaName,
+            builder: (context, state) => const EscolaScreen(),
+          ),
+          GoRoute(
+            path: AppRoutes.wizardTurma,
+            name: AppRoutes.wizardTurmaName,
+            builder: (context, state) => const TurmaScreen(),
+          ),
+          GoRoute(
+            path: AppRoutes.wizardAvaliacao,
+            name: AppRoutes.wizardAvaliacaoName,
+            builder: (context, state) => const AvaliacaoScreen(),
+          ),
+          GoRoute(
+            path: AppRoutes.wizardAvaliacaoDetalhe,
+            name: AppRoutes.wizardAvaliacaoDetalheName,
+            builder: (context, state) => const AvaliacaoDetailScreen(),
+          ),
+          GoRoute(
+            path: AppRoutes.wizardGabaritoProf,
+            name: AppRoutes.wizardGabaritoProfName,
+            builder: (context, state) => const GabaritoProfessorScreen(),
+          ),
+          GoRoute(
+            path: AppRoutes.wizardGabarito,
+            name: AppRoutes.wizardGabaritoName,
+            builder: (context, state) => const GabaritoScreen(),
+          ),
+          GoRoute(
+            path: AppRoutes.wizardResultado,
+            name: AppRoutes.wizardResultadoName,
+            builder: (context, state) => const ResultadoFinalScreen(),
+          ),
+        ],
       ),
     ],
   );
@@ -55,7 +168,7 @@ class _RouterNotifier extends ChangeNotifier {
   _RouterNotifier(this._ref) {
     _ref.listen<AsyncValue<ProfessorModel?>>(
       authViewModelProvider,
-      (_, __) => notifyListeners(),
+      (_, _) => notifyListeners(),
     );
   }
 
@@ -73,11 +186,11 @@ class _RouterNotifier extends ChangeNotifier {
 
     final isAuthenticated = authState.valueOrNull != null;
 
-    // Sessão ativa → pula o login e vai direto ao wizard.
-    if (isAuthenticated && loc == AppRoutes.login) return AppRoutes.wizard;
+    // Sessão ativa → pula o login e vai direto à home.
+    if (isAuthenticated && loc == AppRoutes.login) return AppRoutes.home;
 
-    // Sem sessão → protege o wizard contra acesso direto.
-    if (!isAuthenticated && loc == AppRoutes.wizard) return AppRoutes.login;
+    // Sem sessão → protege home e qualquer sub-rota do wizard.
+    if (!isAuthenticated && (loc == AppRoutes.home || loc.startsWith('/wizard'))) return AppRoutes.login;
 
     return null;
   }
@@ -85,17 +198,49 @@ class _RouterNotifier extends ChangeNotifier {
 
 /// Constantes de todas as rotas do app.
 ///
-/// Uso com path:  context.go(AppRoutes.login)
-/// Uso com name:  context.goNamed(AppRoutes.loginName)
+/// Uso com path:  context.go(AppRoutes.wizardEscola)
+/// Uso com name:  context.goNamed(AppRoutes.wizardEscolaName)
 abstract final class AppRoutes {
   static const String splash = '/';
   static const String splashName = 'splash';
 
+  static const String home = '/home';
+  static const String homeName = 'home';
+
   static const String login = '/login';
   static const String loginName = 'login';
 
-  static const String wizard = '/wizard';
-  static const String wizardName = 'wizard';
+  // ── Wizard sub-routes ──────────────────────────────────────────────────────
+  // Ponto de entrada: /wizard/escola (step 1).
+  // Mantemos a constante `wizard` apontando para o step 1 por conveniência.
+  static const String wizard = wizardEscola;
+
+  static const String wizardEscola = '/wizard/escola';
+  static const String wizardEscolaName = 'wizard-escola';
+
+  static const String wizardTurma = '/wizard/turma';
+  static const String wizardTurmaName = 'wizard-turma';
+
+  static const String wizardAvaliacao = '/wizard/avaliacao';
+  static const String wizardAvaliacaoName = 'wizard-avaliacao';
+
+  static const String wizardAvaliacaoDetalhe = '/wizard/avaliacao/detalhe';
+  static const String wizardAvaliacaoDetalheName = 'wizard-avaliacao-detalhe';
+
+  static const String wizardGabaritoProf = '/wizard/gabarito/professor';
+  static const String wizardGabaritoProfName = 'wizard-gabarito-professor';
+
+  static const String wizardGabarito = '/wizard/gabarito';
+  static const String wizardGabaritoName = 'wizard-gabarito';
+
+  static const String wizardResultado = '/wizard/resultado';
+  static const String wizardResultadoName = 'wizard-resultado';
+
+  static const String scanner = '/scanner';
+  static const String scannerName = 'scanner';
+
+  static const String scannerResultado = '/scanner/resultado';
+  static const String scannerResultadoName = 'scanner-resultado';
 }
 
-
+// (placeholder removido — todos os steps estão implementados)

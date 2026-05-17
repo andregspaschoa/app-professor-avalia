@@ -1,19 +1,42 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
-import '../../features/auth/auth_viewmodel.dart';
+import '../auth/auth_viewmodel.dart';
+import '../wizard/wizard_viewmodel.dart';
 
-/// Placeholder da tela do wizard.
-/// Será substituído pela implementação real na Fase 3 (feat: wizard).
+/// Shell do wizard — envolve todos os sub-steps com o Scaffold compartilhado.
+///
+/// Exibe:
+/// - AppBar com título do step atual, botão Voltar (steps 2–6) e botão de logout.
+/// - [LinearProgressIndicator] indicando progresso (step 1–6).
+/// - [child]: conteúdo da rota ativa (EscolaScreen, TurmaScreen, etc.).
+///
+/// O step é lido de [wizardViewModelProvider] para garantir atualização correta
+/// independentemente de push() ou go() ser usado na navegação.
 class WizardScreen extends ConsumerWidget {
-  const WizardScreen({super.key});
+  const WizardScreen({super.key, required this.child});
+
+  /// Corpo do step atual — injetado pelo [ShellRoute] do go_router.
+  final Widget child;
+
+  static const _stepTitles = [
+    'Selecionar Escola',      // step 1
+    'Selecionar Turma',       // step 2
+    'Selecionar Avaliação',   // step 3
+    'Confirmar Avaliação',    // step 4
+    'Gabarito do Professor',  // step 5
+    'Inserir Respostas',      // step 6
+  ];
+
+  static const _totalSteps = 6;
 
   Future<void> _confirmLogout(BuildContext context, WidgetRef ref) async {
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (ctx) => AlertDialog(
         title: const Text('Sair da conta'),
-        content: const Text('Are you sure?'),
+        content: const Text('Deseja realmente sair?'),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(ctx).pop(false),
@@ -29,17 +52,53 @@ class WizardScreen extends ConsumerWidget {
         ],
       ),
     );
-    if (confirmed == true) {
+    if (confirmed == true && context.mounted) {
       await ref.read(authViewModelProvider.notifier).logout();
     }
   }
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final theme = Theme.of(context);
+    final step = ref.watch(wizardViewModelProvider).step;
+    final safeStep = step.clamp(1, _totalSteps);
+    final title = _stepTitles[safeStep - 1];
+    final progress = safeStep / _totalSteps;
+
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Wizard'),
+        leading: safeStep > 1
+            ? IconButton(
+                icon: const Icon(Icons.arrow_back_rounded),
+                tooltip: 'Voltar',
+                onPressed: () {
+                  ref
+                      .read(wizardViewModelProvider.notifier)
+                      .advanceToStep(safeStep - 1);
+                  context.pop();
+                },
+              )
+            : null,
+        automaticallyImplyLeading: false,
+        title: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              title,
+              style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                    fontWeight: FontWeight.w600,
+                  ),
+            ),
+            Text(
+              'Passo $safeStep de $_totalSteps',
+              style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                    color: Theme.of(context)
+                        .colorScheme
+                        .onSurface
+                        .withAlpha(150),
+                  ),
+            ),
+          ],
+        ),
         actions: [
           IconButton(
             icon: const Icon(Icons.logout_rounded),
@@ -47,38 +106,16 @@ class WizardScreen extends ConsumerWidget {
             onPressed: () => _confirmLogout(context, ref),
           ),
         ],
-      ),
-      body: Center(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Icon(
-              Icons.checklist_rounded,
-              size: 64,
-              color: theme.colorScheme.secondary,
-            ),
-            const SizedBox(height: 16),
-            Text('Wizard', style: theme.textTheme.headlineMedium),
-            const SizedBox(height: 8),
-            Text(
-              'Fase 3 — em breve',
-              style: theme.textTheme.bodyMedium?.copyWith(
-                color: theme.colorScheme.onSurface.withAlpha(120),
-              ),
-            ),
-            const SizedBox(height: 32),
-            OutlinedButton.icon(
-              icon: const Icon(Icons.logout_rounded),
-              label: const Text('Logout'),
-              style: OutlinedButton.styleFrom(
-                foregroundColor: theme.colorScheme.error,
-                side: BorderSide(color: theme.colorScheme.error),
-              ),
-              onPressed: () => _confirmLogout(context, ref),
-            ),
-          ],
+        bottom: PreferredSize(
+          preferredSize: const Size.fromHeight(4),
+          child: LinearProgressIndicator(
+            value: progress,
+            backgroundColor:
+                Theme.of(context).colorScheme.surfaceContainerHighest,
+          ),
         ),
       ),
+      body: child,
     );
   }
 }
