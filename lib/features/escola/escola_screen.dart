@@ -47,6 +47,26 @@ class EscolaScreen extends ConsumerWidget {
   }
 }
 
+class _TipoChip extends StatelessWidget {
+  const _TipoChip({required this.tipo});
+  final String tipo;
+
+  @override
+  Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final theme = Theme.of(context);
+    return Chip(
+      label: Text(tipo),
+      labelStyle: theme.textTheme.labelSmall?.copyWith(
+        color: isDark ? const Color(0xFFBDBDBD) : Colors.grey.shade700,
+      ),
+      backgroundColor: isDark ? const Color(0xFF3D3D3D) : Colors.grey.shade200,
+      side: BorderSide.none,
+      padding: const EdgeInsets.symmetric(horizontal: 4),
+    );
+  }
+}
+
 class _EscolaCard extends ConsumerWidget {
   const _EscolaCard({required this.escola});
 
@@ -68,7 +88,7 @@ class _EscolaCard extends ConsumerWidget {
             color: theme.colorScheme.onSurface.withAlpha(160),
           ),
         ),
-        trailing: Chip(label: Text(escola.tipo)),
+        trailing: _TipoChip(tipo: escola.tipo),
         onTap: () {
           ref.read(wizardViewModelProvider.notifier).setEscola(escola.id, escola.nome);
           context.push(AppRoutes.wizardTurma);

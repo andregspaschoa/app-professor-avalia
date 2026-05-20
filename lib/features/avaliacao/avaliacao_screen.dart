@@ -103,11 +103,9 @@ class _AvaliacaoCard extends ConsumerWidget {
           ),
         ),
         trailing: Chip(
-          label: Text(
-            _statusLabel(status),
-            style: theme.textTheme.labelSmall?.copyWith(
-              color: _chipLabelColor(context, status),
-            ),
+          label: Text(_statusLabel(status)),
+          labelStyle: theme.textTheme.labelSmall?.copyWith(
+            color: _chipLabelColor(context, status),
           ),
           backgroundColor: _chipBackgroundColor(context, status),
           side: BorderSide.none,

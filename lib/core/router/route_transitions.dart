@@ -7,6 +7,7 @@ import 'package:go_router/go_router.dart';
 Page<void> fadePage(GoRouterState state, Widget child) =>
     CustomTransitionPage<void>(
       key: state.pageKey,
+      name: state.name,
       child: child,
       transitionDuration: const Duration(milliseconds: 350),
       reverseTransitionDuration: const Duration(milliseconds: 250),
@@ -20,6 +21,7 @@ Page<void> fadePage(GoRouterState state, Widget child) =>
 Page<void> slideRightPage(GoRouterState state, Widget child) =>
     CustomTransitionPage<void>(
       key: state.pageKey,
+      name: state.name,
       child: child,
       transitionDuration: const Duration(milliseconds: 280),
       reverseTransitionDuration: const Duration(milliseconds: 220),
@@ -36,6 +38,7 @@ Page<void> slideRightPage(GoRouterState state, Widget child) =>
 Page<void> slideBottomPage(GoRouterState state, Widget child) =>
     CustomTransitionPage<void>(
       key: state.pageKey,
+      name: state.name,
       child: child,
       transitionDuration: const Duration(milliseconds: 320),
       reverseTransitionDuration: const Duration(milliseconds: 250),

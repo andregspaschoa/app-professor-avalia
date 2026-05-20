@@ -52,6 +52,26 @@ class TurmaScreen extends ConsumerWidget {
   }
 }
 
+class _AnoChip extends StatelessWidget {
+  const _AnoChip({required this.anoLetivo});
+  final int anoLetivo;
+
+  @override
+  Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final theme = Theme.of(context);
+    return Chip(
+      label: Text(anoLetivo.toString()),
+      labelStyle: theme.textTheme.labelSmall?.copyWith(
+        color: isDark ? const Color(0xFFBDBDBD) : Colors.grey.shade700,
+      ),
+      backgroundColor: isDark ? const Color(0xFF3D3D3D) : Colors.grey.shade200,
+      side: BorderSide.none,
+      padding: const EdgeInsets.symmetric(horizontal: 4),
+    );
+  }
+}
+
 class _TurmaCard extends ConsumerWidget {
   const _TurmaCard({required this.turma});
 
@@ -73,7 +93,7 @@ class _TurmaCard extends ConsumerWidget {
             color: theme.colorScheme.onSurface.withAlpha(160),
           ),
         ),
-        trailing: Chip(label: Text(turma.anoLetivo.toString())),
+        trailing: _AnoChip(anoLetivo: turma.anoLetivo),
         onTap: () {
           ref.read(wizardViewModelProvider.notifier).setTurma(turma.id, turma.nome);
           context.push(AppRoutes.wizardAvaliacao);
