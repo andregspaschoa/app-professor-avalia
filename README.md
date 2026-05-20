@@ -199,4 +199,4 @@ GitHub Actions executa em cada push/PR para `main` e `develop`:
 
 ## Licença
 
-MIT © 2022 André Gabriel Sampaio Paschoa
+MIT © 2026 André Gabriel Sampaio Paschoa
