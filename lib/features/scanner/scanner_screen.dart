@@ -80,7 +80,21 @@ class _ScannerScreenState extends ConsumerState<ScannerScreen>
         avaliacoes?.where((a) => a.id == avaliacaoId).firstOrNull;
     final totalQuestoes = avaliacao?.totalQuestoes ?? 10;
 
-    await ref.read(scannerViewModelProvider.notifier).scan(totalQuestoes);
+    // Captura a foto real se a câmera estiver disponível.
+    // O path é persistido no Hive para consulta posterior (ex: contestação de nota).
+    String? imagePath;
+    if (_cameraReady && _cameraController != null) {
+      try {
+        final xfile = await _cameraController!.takePicture();
+        imagePath = xfile.path;
+      } catch (_) {
+        // Falha silenciosa — scan continua sem imagem (emulador sem câmera real).
+      }
+    }
+
+    await ref
+        .read(scannerViewModelProvider.notifier)
+        .scan(totalQuestoes, imagePath: imagePath);
   }
 
   @override

@@ -70,7 +70,7 @@ class _TurmaCard extends ConsumerWidget {
         ),
         trailing: Chip(label: Text(turma.anoLetivo.toString())),
         onTap: () {
-          ref.read(wizardViewModelProvider.notifier).setTurma(turma.id);
+          ref.read(wizardViewModelProvider.notifier).setTurma(turma.id, turma.nome);
           context.push(AppRoutes.wizardAvaliacao);
         },
       ),

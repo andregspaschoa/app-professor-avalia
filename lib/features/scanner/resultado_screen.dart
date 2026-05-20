@@ -6,6 +6,7 @@ import 'package:hive_flutter/hive_flutter.dart';
 import '../../core/constants/app_constants.dart';
 import '../../shared/widgets/gabarito_grid.dart';
 import '../avaliacao/avaliacao_viewmodel.dart';
+import '../dashboard/dashboard_viewmodel.dart';
 import '../gabarito/gabarito_viewmodel.dart';
 import '../wizard/wizard_viewmodel.dart';
 import 'scanner_viewmodel.dart';
@@ -99,11 +100,18 @@ class ResultadoScreen extends ConsumerWidget {
                         'aluno_id': aluno.id,
                         'aluno_nome': aluno.nome,
                         'avaliacao_id': wizardState.avaliacaoId,
+                        'avaliacao_titulo': wizardState.avaliacaoTitulo,
                         'turma_id': wizardState.turmaId,
+                        'turma_nome': wizardState.turmaNome,
                         'escola_id': wizardState.escolaId,
+                        'escola_nome': wizardState.escolaNome,
                         'respostas_aluno': scanResult,
+                        'gabarito': gabarito,
                         'acertos': acertos,
                         'nota_calculada': nota,
+                        'nota_maxima': avaliacao.notaMaxima,
+                        'total_questoes': totalQuestoes,
+                        'image_path': scanState.imagePath,
                         'status': 'corrigida',
                         'origem': 'scanner',
                         'created_at': DateTime.now().toIso8601String(),
@@ -139,6 +147,12 @@ class ResultadoScreen extends ConsumerWidget {
     try {
       final box = Hive.box<dynamic>(AppConstants.hiveBoxScans);
       await box.add(data);
+      // Marca o aluno como salvo para evitar duplicação no fluxo manual.
+      ref
+          .read(gabaritoViewModelProvider.notifier)
+          .marcarSalvo(data['aluno_id'] as String);
+      // Atualiza o dashboard com o novo scan.
+      ref.read(dashboardViewModelProvider.notifier).refresh();
     } catch (_) {
       // Hive pode não estar aberto em ambiente de teste; ignora silenciosamente.
     }

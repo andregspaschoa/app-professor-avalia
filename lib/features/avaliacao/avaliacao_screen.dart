@@ -98,7 +98,9 @@ class _AvaliacaoCard extends ConsumerWidget {
           padding: const EdgeInsets.symmetric(horizontal: 4),
         ),
         onTap: () {
-          ref.read(wizardViewModelProvider.notifier).setAvaliacao(avaliacao.id);
+          ref
+              .read(wizardViewModelProvider.notifier)
+              .setAvaliacao(avaliacao.id, avaliacao.titulo);
           context.push(AppRoutes.wizardAvaliacaoDetalhe);
         },
       ),

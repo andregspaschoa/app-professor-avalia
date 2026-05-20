@@ -10,6 +10,7 @@ class ScannerState {
   const ScannerState({
     this.status = ScannerStatus.idle,
     this.scanResult,
+    this.imagePath,
     this.errorMessage,
   });
 
@@ -17,16 +18,22 @@ class ScannerState {
 
   /// Alternativas geradas pelo scan fake (A–E), uma por questão.
   final List<String>? scanResult;
+
+  /// Path local da foto capturada — persistido no Hive para revisão posterior.
+  final String? imagePath;
+
   final String? errorMessage;
 
   ScannerState copyWith({
     ScannerStatus? status,
     List<String>? scanResult,
+    String? imagePath,
     String? errorMessage,
   }) {
     return ScannerState(
       status: status ?? this.status,
       scanResult: scanResult ?? this.scanResult,
+      imagePath: imagePath ?? this.imagePath,
       errorMessage: errorMessage ?? this.errorMessage,
     );
   }
@@ -39,7 +46,8 @@ class ScannerViewModel extends Notifier<ScannerState> {
   /// Inicia o fluxo de scan:
   /// 1. Simula processamento por [AppConstants.fakeScannerDelay].
   /// 2. Gera respostas aleatórias de [AppConstants.alternativas].
-  Future<void> scan(int totalQuestoes) async {
+  /// 3. Persiste [imagePath] no estado para ser salvo no Hive.
+  Future<void> scan(int totalQuestoes, {String? imagePath}) async {
     state = state.copyWith(status: ScannerStatus.processing);
 
     await Future<void>.delayed(AppConstants.fakeScannerDelay);
@@ -54,6 +62,7 @@ class ScannerViewModel extends Notifier<ScannerState> {
     state = state.copyWith(
       status: ScannerStatus.done,
       scanResult: respostas,
+      imagePath: imagePath,
     );
   }
 

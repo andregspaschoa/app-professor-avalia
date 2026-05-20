@@ -24,7 +24,7 @@ void main() {
       final container = _makeContainer();
       addTearDown(container.dispose);
 
-      container.read(wizardViewModelProvider.notifier).setEscola('esc_01');
+      container.read(wizardViewModelProvider.notifier).setEscola('esc_01', 'Escola 01');
       final state = container.read(wizardViewModelProvider);
 
       expect(state.escolaId, 'esc_01');
@@ -36,10 +36,10 @@ void main() {
       addTearDown(container.dispose);
       final notifier = container.read(wizardViewModelProvider.notifier);
 
-      notifier.setEscola('esc_01');
-      notifier.setTurma('tur_01');
-      notifier.setAvaliacao('ava_01');
-      notifier.setEscola('esc_02'); // troca de escola
+      notifier.setEscola('esc_01', 'Escola 01');
+      notifier.setTurma('tur_01', 'Turma 01');
+      notifier.setAvaliacao('ava_01', 'Avaliação 01');
+      notifier.setEscola('esc_02', 'Escola 02'); // troca de escola
 
       final state = container.read(wizardViewModelProvider);
       expect(state.escolaId, 'esc_02');
@@ -55,8 +55,8 @@ void main() {
       addTearDown(container.dispose);
       final notifier = container.read(wizardViewModelProvider.notifier);
 
-      notifier.setEscola('esc_01');
-      notifier.setTurma('tur_01');
+      notifier.setEscola('esc_01', 'Escola 01');
+      notifier.setTurma('tur_01', 'Turma 01');
       final state = container.read(wizardViewModelProvider);
 
       expect(state.turmaId, 'tur_01');
@@ -71,9 +71,9 @@ void main() {
       addTearDown(container.dispose);
       final notifier = container.read(wizardViewModelProvider.notifier);
 
-      notifier.setEscola('esc_01');
-      notifier.setTurma('tur_01');
-      notifier.setAvaliacao('ava_01');
+      notifier.setEscola('esc_01', 'Escola 01');
+      notifier.setTurma('tur_01', 'Turma 01');
+      notifier.setAvaliacao('ava_01', 'Avaliação 01');
       final state = container.read(wizardViewModelProvider);
 
       expect(state.avaliacaoId, 'ava_01');
@@ -89,8 +89,8 @@ void main() {
       addTearDown(container.dispose);
       final notifier = container.read(wizardViewModelProvider.notifier);
 
-      notifier.setEscola('esc_01');
-      notifier.setTurma('tur_01');
+      notifier.setEscola('esc_01', 'Escola 01');
+      notifier.setTurma('tur_01', 'Turma 01');
       notifier.advanceToStep(5);
       final state = container.read(wizardViewModelProvider);
 
@@ -106,9 +106,9 @@ void main() {
       addTearDown(container.dispose);
       final notifier = container.read(wizardViewModelProvider.notifier);
 
-      notifier.setEscola('esc_01');
-      notifier.setTurma('tur_01');
-      notifier.setAvaliacao('ava_01');
+      notifier.setEscola('esc_01', 'Escola 01');
+      notifier.setTurma('tur_01', 'Turma 01');
+      notifier.setAvaliacao('ava_01', 'Avaliação 01');
       notifier.reset();
       final state = container.read(wizardViewModelProvider);
 
@@ -119,6 +119,24 @@ void main() {
     });
   });
 
+  group('WizardViewModel.setGabarito()', () {
+    test('armazena gabarito e avança para step 6', () {
+      final container = _makeContainer();
+      addTearDown(container.dispose);
+      final notifier = container.read(wizardViewModelProvider.notifier);
+
+      notifier.setEscola('esc_01', 'Escola 01');
+      notifier.setTurma('tur_01', 'Turma 01');
+      notifier.setAvaliacao('ava_01', 'Avaliação 01');
+      notifier.setGabarito(['A', 'B', 'C', 'D', 'E']);
+      final state = container.read(wizardViewModelProvider);
+
+      expect(state.gabaritoConfirmado, ['A', 'B', 'C', 'D', 'E']);
+      expect(state.step, 6);
+      expect(state.avaliacaoId, 'ava_01');
+    });
+  });
+
   group('WizardViewModel — fluxo completo Escola → Turma → Avaliação', () {
     test('transitions de step seguem a sequência 1 → 2 → 3 → 4', () {
       final container = _makeContainer();
@@ -126,11 +144,11 @@ void main() {
       final notifier = container.read(wizardViewModelProvider.notifier);
 
       expect(container.read(wizardViewModelProvider).step, 1);
-      notifier.setEscola('esc_01');
+      notifier.setEscola('esc_01', 'Escola 01');
       expect(container.read(wizardViewModelProvider).step, 2);
-      notifier.setTurma('tur_01');
+      notifier.setTurma('tur_01', 'Turma 01');
       expect(container.read(wizardViewModelProvider).step, 3);
-      notifier.setAvaliacao('ava_01');
+      notifier.setAvaliacao('ava_01', 'Avaliação 01');
       expect(container.read(wizardViewModelProvider).step, 4);
     });
   });

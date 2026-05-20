@@ -13,15 +13,15 @@
 
 | Feature | Status |
 |---|---|
-| Splash nativa + animada | 🔜 |
-| Login fake com sessão persistida | 🔜 |
-| Wizard: Escola → Turma → Avaliação | 🔜 |
-| Grid de gabarito estilo cartão resposta | 🔜 |
-| Scanner fake animado | 🔜 |
-| Resultado com acertos/erros por cor | 🔜 |
+| Splash nativa + animada | ✅ |
+| Login fake com sessão persistida | ✅ |
+| Wizard: Escola → Turma → Avaliação | ✅ |
+| Grid de gabarito estilo cartão resposta | ✅ |
+| Scanner fake animado | ✅ |
+| Resultado com acertos/erros por cor | ✅ |
 | Dashboard com estatísticas mockadas | 🔜 |
-| Histórico de scans (Hive local) | 🔜 |
-| Dark mode | 🔜 |
+| Histórico de scans (Hive local) | ✅ |
+| Dark mode | ✅ |
 
 ---
 

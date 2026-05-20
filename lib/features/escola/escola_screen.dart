@@ -66,7 +66,7 @@ class _EscolaCard extends ConsumerWidget {
         ),
         trailing: Chip(label: Text(escola.tipo)),
         onTap: () {
-          ref.read(wizardViewModelProvider.notifier).setEscola(escola.id);
+          ref.read(wizardViewModelProvider.notifier).setEscola(escola.id, escola.nome);
           context.push(AppRoutes.wizardTurma);
         },
       ),

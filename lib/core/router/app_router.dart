@@ -8,6 +8,8 @@ import '../../features/auth/login_screen.dart';
 import '../../features/auth/model/auth_model.dart';
 import '../../features/avaliacao/avaliacao_detail_screen.dart';
 import '../../features/avaliacao/avaliacao_screen.dart';
+import '../../features/dashboard/avaliacao_detalhe_screen.dart';
+import '../../features/dashboard/scan_detail_screen.dart';
 import '../../features/escola/escola_screen.dart';
 import '../../features/gabarito/gabarito_professor_screen.dart';
 import '../../features/gabarito/gabarito_screen.dart';
@@ -99,6 +101,22 @@ final appRouterProvider = Provider<GoRouter>((ref) {
         path: AppRoutes.scannerResultado,
         name: AppRoutes.scannerResultadoName,
         builder: (context, state) => const ResultadoScreen(),
+      ),
+      GoRoute(
+        path: AppRoutes.scanDetail,
+        name: AppRoutes.scanDetailName,
+        builder: (context, state) {
+          final data = state.extra as Map<String, dynamic>? ?? {};
+          return ScanDetailScreen(scanData: data);
+        },
+      ),
+      GoRoute(
+        path: AppRoutes.avaliacaoDetalhe,
+        name: AppRoutes.avaliacaoDetalheName,
+        builder: (context, state) {
+          final data = state.extra as Map<String, dynamic>? ?? {};
+          return AvaliacaoDetalheScreen(data: data);
+        },
       ),
       // ── Wizard shell ────────────────────────────────────────────────────────
       // O ShellRoute envolve todas as sub-rotas do wizard com o Scaffold
@@ -241,6 +259,10 @@ abstract final class AppRoutes {
 
   static const String scannerResultado = '/scanner/resultado';
   static const String scannerResultadoName = 'scanner-resultado';
-}
 
-// (placeholder removido — todos os steps estão implementados)
+  static const String scanDetail = '/scan/detail';
+  static const String scanDetailName = 'scan-detail';
+
+  static const String avaliacaoDetalhe = '/avaliacao/detalhe';
+  static const String avaliacaoDetalheName = 'avaliacao-detalhe';
+}

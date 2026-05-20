@@ -9,6 +9,9 @@ class WizardState {
     this.escolaId,
     this.turmaId,
     this.avaliacaoId,
+    this.escolaNome,
+    this.turmaNome,
+    this.avaliacaoTitulo,
     this.gabaritoConfirmado,
     this.step = 1,
   });
@@ -22,6 +25,15 @@ class WizardState {
   /// ID da avaliação selecionada no step 3.
   final String? avaliacaoId;
 
+  /// Nome de exibição da escola — persistido junto aos scans para o dashboard.
+  final String? escolaNome;
+
+  /// Nome de exibição da turma — persistido junto aos scans para o dashboard.
+  final String? turmaNome;
+
+  /// Título da avaliação — persistido junto aos scans para o dashboard.
+  final String? avaliacaoTitulo;
+
   /// Gabarito confirmado pelo professor no step 5.
   /// Sobrepõe o gabarito padrão da avaliação para cálculo de notas.
   final List<String>? gabaritoConfirmado;
@@ -33,6 +45,9 @@ class WizardState {
     String? escolaId,
     String? turmaId,
     String? avaliacaoId,
+    String? escolaNome,
+    String? turmaNome,
+    String? avaliacaoTitulo,
     Object? gabaritoConfirmado = _sentinel,
     int? step,
   }) {
@@ -40,6 +55,9 @@ class WizardState {
       escolaId: escolaId ?? this.escolaId,
       turmaId: turmaId ?? this.turmaId,
       avaliacaoId: avaliacaoId ?? this.avaliacaoId,
+      escolaNome: escolaNome ?? this.escolaNome,
+      turmaNome: turmaNome ?? this.turmaNome,
+      avaliacaoTitulo: avaliacaoTitulo ?? this.avaliacaoTitulo,
       gabaritoConfirmado: identical(gabaritoConfirmado, _sentinel)
           ? this.gabaritoConfirmado
           : gabaritoConfirmado as List<String>?,
@@ -58,8 +76,7 @@ class WizardState {
           step == other.step;
 
   @override
-  int get hashCode =>
-      Object.hash(escolaId, turmaId, avaliacaoId, step);
+  int get hashCode => Object.hash(escolaId, turmaId, avaliacaoId, step);
 }
 
 const _sentinel = Object();
@@ -83,18 +100,22 @@ class WizardViewModel extends Notifier<WizardState> {
   ///
   /// Limpa os campos de turma e avaliação para evitar estado inconsistente
   /// caso o usuário volte e selecione uma escola diferente.
-  void setEscola(String escolaId) {
-    state = WizardState(escolaId: escolaId, step: 2);
+  void setEscola(String escolaId, String escolaNome) {
+    state = WizardState(escolaId: escolaId, escolaNome: escolaNome, step: 2);
   }
 
   /// Registra a turma selecionada e avança para o step 3.
-  void setTurma(String turmaId) {
-    state = state.copyWith(turmaId: turmaId, step: 3);
+  void setTurma(String turmaId, String turmaNome) {
+    state = state.copyWith(turmaId: turmaId, turmaNome: turmaNome, step: 3);
   }
 
   /// Registra a avaliação selecionada e avança para o step 4.
-  void setAvaliacao(String avaliacaoId) {
-    state = state.copyWith(avaliacaoId: avaliacaoId, step: 4);
+  void setAvaliacao(String avaliacaoId, String avaliacaoTitulo) {
+    state = state.copyWith(
+      avaliacaoId: avaliacaoId,
+      avaliacaoTitulo: avaliacaoTitulo,
+      step: 4,
+    );
   }
 
   /// Armazena o gabarito confirmado pelo professor (step 5) e avança para step 6.

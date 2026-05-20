@@ -3,10 +3,6 @@
 /// Constantes globais do aplicativo.
 /// Valores de ambiente (base_url, flavor) devem vir de AppEnvironment.
 abstract final class AppConstants {
-  // ── App ──────────────────────────────────────────────────────────────────
-  static const String appName = 'Professor Avalia';
-  static const String appVersion = '1.0.0';
-
   // ── Hive box names ────────────────────────────────────────────────────────
   static const String hiveBoxScans = 'scans';
   static const String hiveBoxSession = 'session';

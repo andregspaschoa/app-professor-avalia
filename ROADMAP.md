@@ -43,7 +43,7 @@
 
 ---
 
-## Fase 3 — Wizard: Escola → Turma → Avaliação
+## ✅ Fase 3 — Wizard: Escola → Turma → Avaliação _(concluída)_
 
 | # | Feature | Execução | Commit |
 |---|---|---|---|
@@ -56,11 +56,11 @@
 | 3.7 | `avaliacao_model` + `avaliacao_repository` | Criar `AvaliacaoModel` (freezed: disciplina, bimestre, tipo, status, gabarito `List<String>`). Filtrar por `turmaId`. Testar parse do gabarito (strings A–E) | `feat: avaliacao — model, repository e gabarito List<String>` |
 | 3.8 | `AvaliacaoViewModel` + `AvaliacaoScreen` | Card exibe disciplina, bimestre, status (chip colorido). Ao selecionar, navegar para tela de detalhes da avaliação | `feat: avaliacao — AvaliacaoScreen com status chip` |
 | 3.9 | Tela de Detalhes da Avaliação | Criar `AvaliacaoDetailScreen` com resumo (escola, turma, avaliação selecionadas), botão grande "Inserir Respostas" e botão secundário "Ver Dashboard". Testar fluxo completo escola → turma → avaliação → detalhe | `feat: avaliacao — AvaliacaoDetailScreen com resumo do wizard` |
-| 3.10 | Testes unitários Wizard | Escrever testes para `WizardViewModel`, `EscolaRepository`, `TurmaRepository`, `AvaliacaoRepository`. Cobrir filtros e transições de estado | `test: wizard — repositórios e viewmodels (escola, turma, avaliacao)` |
+| 3.10 | Testes unitários Wizard | Repositórios (`escola`, `turma`, `avaliacao`) e `WizardViewModel` cobertos em `test/unit/`. Testes de `EscolaViewModel` e `TurmaViewModel` pendentes (Fase 8) | `test: wizard — repositórios e viewmodels (escola, turma, avaliacao)` ⚠️ parcial |
 
 ---
 
-## Fase 4 — Gabarito (Grid Cartão Resposta)
+## ✅ Fase 4 — Gabarito (Grid Cartão Resposta) _(concluída)_
 
 | # | Feature | Execução | Commit |
 |---|---|---|---|
@@ -69,11 +69,11 @@
 | 4.3 | `aluno_model` + `aluno_repository` | Criar `AlunoModel` (freezed: matrícula, nome, dataNasc, ativo) e `AlunoRepository` lendo `assets/mock/alunos.json`, filtrado por `turmaId`. Testar filtro de alunos ativos | `feat: gabarito — AlunoModel e AlunoRepository` |
 | 4.4 | `GabaritoViewModel` | Gerenciar lista de alunos, aluno atual, respostas preenchidas. Métodos: `setResposta(questao, alternativa)`, `proximoAluno`, `alunoAnterior`, `isCompleto`. Testar todas as transições | `feat: gabarito — GabaritoViewModel com navegação entre alunos` |
 | 4.5 | `GabaritoScreen` | Tela principal: header com nome do aluno e progresso (aluno 3/25), `GabaritoGrid` central, botões "Anterior" / "Próximo" / "Escanear". Testar manualmente fluxo de preenchimento para 3 alunos | `feat: gabarito — GabaritoScreen com navegação entre alunos` |
-| 4.6 | Testes widget GabaritoGrid | Cobrir: seleção de alternativa, deselect, navegação entre alunos, indicador de progresso | `test: gabarito — widget GabaritoGrid e GabaritoScreen` |
+| 4.6 | Testes widget GabaritoGrid | Cobrir: seleção de alternativa, deselect, navegação entre alunos, indicador de progresso | `test: gabarito — widget GabaritoGrid e GabaritoScreen` ⚠️ pendente |
 
 ---
 
-## Fase 5 — Scanner Fake Animado
+## ✅ Fase 5 — Scanner Fake Animado _(concluída)_
 
 | # | Feature | Execução | Commit |
 |---|---|---|---|
@@ -82,19 +82,19 @@
 | 5.3 | `scanner_viewmodel` | Gerenciar estado: `idle | scanning | processing | done | error`. Expor `scanResult` com respostas geradas. Testar transições de estado com `mocktail` | `feat: scanner — ScannerViewModel com estados de scan` |
 | 5.4 | `ResultadoScreen` | Tela pós-scan: score grande no topo (ex: "8.0"), grid de gabarito com acertos em verde / erros em vermelho, botão "Salvar" e "Refazer". Testar renderização com dados mockados | `feat: scanner — ResultadoScreen com score e gabarito colorido` |
 | 5.5 | Salvar scan no Hive | Ao confirmar resultado, salvar `Map<String, dynamic>` no box `scans` (aluno, nota, respostas, imagePath, turmaId, avaliacaoId, data). Testar persistência e leitura posterior | `feat: scanner — persistência do scan no Hive` |
-| 5.6 | Testes unitários Scanner | Cobrir `ScannerViewModel`: transições de estado, geração de respostas fake, cálculo de nota | `test: scanner — ScannerViewModel` |
+| 5.6 | Testes unitários Scanner | Cobrir `ScannerViewModel`: transições de estado, geração de respostas fake, cálculo de nota | `test: scanner — ScannerViewModel` ⚠️ pendente |
 
 ---
 
-## Fase 6 — Dashboard com Estatísticas
+## ✅ Fase 6 — Dashboard com Estatísticas _(concluída)_
 
 | # | Feature | Execução | Commit |
 |---|---|---|---|
-| 6.1 | `dashboard_repository` | Criar `DashboardRepository`. Calcular a partir dos dados do Hive: total corrigidos hoje, média da turma, questão com mais erros, quantidade pendente (alunos da turma sem scan). Testar cálculos com dados mockados | `feat: dashboard — DashboardRepository com métricas do Hive` |
-| 6.2 | `DashboardViewModel` | `@riverpod AsyncNotifier` lendo `DashboardRepository`. Expor `DashboardStats` (freezed). Testar com cenário zero scans e com scans existentes | `feat: dashboard — DashboardViewModel e DashboardStats` |
-| 6.3 | `DashboardScreen` — cards de stats | Implementar tela com 4 cards de métricas (total corrigidos, média, questão problemática, pendentes). Layout responsivo com `GridView`. Testar dark mode | `feat: dashboard — DashboardScreen com cards de métricas` |
-| 6.4 | Histórico de scans | Seção "Últimos scans" na `DashboardScreen`: `ListView` de cards com nome do aluno, nota (chip colorido) e data. Tap abre `HistoricoDetalheScreen` com foto do cartão e gabarito corrigido | `feat: dashboard — histórico de scans com HistoricoDetalheScreen` |
-| 6.5 | Testes unitários Dashboard | Cobrir `DashboardRepository`: média correta, questão com mais erros, total pendente | `test: dashboard — DashboardRepository métricas` |
+| 6.1 | `dashboard_repository` | `DashboardRepository` síncrono: lê box Hive `scans`, calcula `mediaTurma`, `questaoCritica` (1-based, questão com mais erros), `scansRecentes` (top 20 desc). Retorna `DashboardStats.empty` em qualquer exceção | `feat: dashboard — DashboardRepository com métricas do Hive` |
+| 6.2 | `DashboardViewModel` | `AutoDisposeNotifier<DashboardStats>` com `build()` + `refresh()`. Provider recriado por `autoDispose`; `refresh()` explícito garante atualização quando HomeScreen fica na pilha (push, não go) | `feat: dashboard — DashboardViewModel e DashboardStats` |
+| 6.3 | `HomeScreen` — cards de stats | 4 `_MetricCard` em `GridView` (Corrigidos, Média geral, Questão crítica, Últimos scans). AppBar com Refresh e Logout. Fluxo completo: login → dashboard → wizard → concluir → dashboard atualizado | `feat: dashboard — HomeScreen com cards de métricas` |
+| 6.4 | "Últimas avaliações" + `AvaliacaoDetalheScreen` | Seção refatorada: scans individuais → cards de avaliação agrupados por `avaliacao_id` (escola, turma, título da prova, N alunos, média, data). Nova rota `/avaliacao/detalhe` lista alunos com badge `scanner`/`manual`; tap abre `/scan/detail`. `WizardState` enriquecido com `escolaNome`, `turmaNome`, `avaliacaoTitulo` persistidos no Hive em cada scan | `feat: dashboard — Últimas avaliações agrupadas + AvaliacaoDetalheScreen` |
+| 6.5 | Testes unitários Dashboard | Cobrir `DashboardRepository`: média correta, questão com mais erros, total pendente | `test: dashboard — DashboardRepository métricas` ⚠️ pendente |
 
 ---
 
@@ -128,11 +128,11 @@
 | Fase | Descrição | Entregável |
 |---|---|---|
 | ✅ 0 | Fundação | Core completo, ícone, splash nativa |
-| 1 | Splash + Roteamento | App navegável ponta a ponta |
-| 2 | Auth fake | Login com sessão persistida |
-| 3 | Wizard | Fluxo escola → turma → avaliação |
-| 4 | Gabarito | Grid de resposta estilo cartão |
-| 5 | Scanner | Scanner fake + resultado colorido |
-| 6 | Dashboard | Métricas e histórico de scans |
+| ✅ 1 | Splash + Roteamento | App navegável ponta a ponta |
+| ✅ 2 | Auth fake | Login com sessão persistida |
+| ✅ 3 | Wizard | Fluxo escola → turma → avaliação |
+| ✅ 4 | Gabarito | Grid de resposta estilo cartão |
+| ✅ 5 | Scanner | Scanner fake + resultado colorido |
+| ✅ 6 | Dashboard | Métricas + "Últimas avaliações" agrupadas + `AvaliacaoDetalheScreen` |
 | 7 | Polimento UX | Animações, skeleton, dark mode |
 | 8 | Qualidade e Release | Flavors, testes, build APK |

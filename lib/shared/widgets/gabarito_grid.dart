@@ -25,6 +25,7 @@ class GabaritoGrid extends StatelessWidget {
     this.readOnly = false,
     this.gabarito,
     this.professorGabaritoMode = false,
+    this.shrinkWrap = false,
   });
 
   final int totalQuestoes;
@@ -34,10 +35,17 @@ class GabaritoGrid extends StatelessWidget {
   final List<String>? gabarito;
   final bool professorGabaritoMode;
 
+  /// Quando [true], o ListView interno usa shrinkWrap + NeverScrollableScrollPhysics.
+  /// Use sempre que o GabaritoGrid for filho de outro scroll view (ex: ListView).
+  final bool shrinkWrap;
+
   @override
   Widget build(BuildContext context) {
     return ListView.builder(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+      shrinkWrap: shrinkWrap,
+      physics:
+          shrinkWrap ? const NeverScrollableScrollPhysics() : null,
       itemCount: totalQuestoes,
       itemBuilder: (context, index) => _QuestaoRow(
         numero: index + 1,
@@ -79,10 +87,19 @@ class _QuestaoRow extends StatelessWidget {
       return null;
     }
     if (!readOnly || respostaCorreta == null) return null;
-    if (alt == respostaCorreta) return Colors.green.shade600;
-    if (alt == respostaSelecionada && alt != respostaCorreta) {
-      return theme.colorScheme.error;
+
+    // Aluno respondeu esta célula.
+    if (alt == respostaSelecionada) {
+      return alt == respostaCorreta
+          ? Colors.green.shade600 // acerto
+          : theme.colorScheme.error; // erro
     }
+    // Aluno errou: mostra a célula correta em verde como referência.
+    if (respostaSelecionada != null && alt == respostaCorreta) {
+      return Colors.green.shade600;
+    }
+    // Aluno não respondeu: não destaca nenhuma célula (evita confundir
+    // gabarito exibido com resposta correta do aluno).
     return null;
   }
 
@@ -115,7 +132,10 @@ class _QuestaoRow extends StatelessWidget {
                 if (readOnly) {
                   return _AltChip(
                     label: alt,
-                    selected: isSelected || alt == respostaCorreta,
+                    selected: respostaSelecionada == alt ||
+                        (respostaSelecionada != null &&
+                            respostaSelecionada != respostaCorreta &&
+                            alt == respostaCorreta),
                     color: overrideColor,
                   );
                 }

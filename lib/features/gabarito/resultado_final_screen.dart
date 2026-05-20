@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 
+import '../../core/constants/app_constants.dart';
 import '../../core/router/app_router.dart';
 import '../avaliacao/avaliacao_viewmodel.dart';
+import '../dashboard/dashboard_viewmodel.dart';
 import '../gabarito/gabarito_viewmodel.dart';
 import '../wizard/wizard_viewmodel.dart';
 
@@ -82,9 +85,23 @@ class ResultadoFinalScreen extends ConsumerWidget {
                 style: FilledButton.styleFrom(
                   minimumSize: const Size.fromHeight(52),
                 ),
-                onPressed: () {
-                  ref.read(wizardViewModelProvider.notifier).reset();
+                onPressed: () async {
+                  // Persiste alunos corrigidos manualmente (não salvos via scanner).
+                  await _salvarManuais(
+                    gabState: gabState,
+                    wizardState: wizardState,
+                    gabarito: gabarito,
+                    pesoPorQuestao: pesoPorQuestao,
+                    notaMaxima: notaMaxima,
+                  );
+                  if (!context.mounted) return;
+                  // Navega para home. O reset do wizard é feito pelo HomeScreen
+                  // antes de iniciar uma nova correção — evita rebuild do
+                  // WizardShell com estado zerado enquanto ainda está na árvore.
                   context.go(AppRoutes.home);
+                  // HomeScreen ainda está vivo na pilha (foi push, não go),
+                  // então o provider está ativo — atualiza o dashboard.
+                  ref.read(dashboardViewModelProvider.notifier).refresh();
                 },
               ),
             ),
@@ -92,6 +109,55 @@ class ResultadoFinalScreen extends ConsumerWidget {
         ],
       ),
     );
+  }
+}
+
+/// Persiste no Hive as correções dos alunos que foram feitas manualmente
+/// (não passaram pelo scanner + "Salvar"). Identifica pelo [GabaritoState.savedAlunoIds].
+Future<void> _salvarManuais({
+  required GabaritoState gabState,
+  required WizardState wizardState,
+  required List<String> gabarito,
+  required double pesoPorQuestao,
+  required double notaMaxima,
+}) async {
+  final unsaved =
+      gabState.alunos.where((a) => !gabState.savedAlunoIds.contains(a.id));
+  if (unsaved.isEmpty) return;
+
+  try {
+    final box = Hive.box<dynamic>(AppConstants.hiveBoxScans);
+    for (final aluno in unsaved) {
+      final respostas = gabState.respostas[aluno.id] ?? [];
+      int acertos = 0;
+      final limit =
+          respostas.length < gabarito.length ? respostas.length : gabarito.length;
+      for (var i = 0; i < limit; i++) {
+        if (respostas[i] != null && respostas[i] == gabarito[i]) acertos++;
+      }
+      await box.add({
+        'aluno_id': aluno.id,
+        'aluno_nome': aluno.nome,
+        'avaliacao_id': wizardState.avaliacaoId,
+        'avaliacao_titulo': wizardState.avaliacaoTitulo,
+        'turma_id': wizardState.turmaId,
+        'turma_nome': wizardState.turmaNome,
+        'escola_id': wizardState.escolaId,
+        'escola_nome': wizardState.escolaNome,
+        'respostas_aluno': respostas,
+        'gabarito': gabarito,
+        'acertos': acertos,
+        'nota_calculada': acertos * pesoPorQuestao,
+        'nota_maxima': notaMaxima,
+        'total_questoes': gabarito.length,
+        'image_path': null,
+        'status': 'corrigida',
+        'origem': 'manual',
+        'created_at': DateTime.now().toIso8601String(),
+      });
+    }
+  } catch (_) {
+    // Hive inacessível (ex.: ambiente de teste) — ignora silenciosamente.
   }
 }
 

@@ -16,6 +16,7 @@ class GabaritoState {
     this.alunos = const [],
     this.currentIndex = 0,
     this.respostas = const {},
+    this.savedAlunoIds = const {},
     this.loading = true,
     this.errorMessage,
   });
@@ -25,6 +26,10 @@ class GabaritoState {
 
   /// Mapa alunoId → lista de alternativas escolhidas (null = não respondida).
   final Map<String, List<String?>> respostas;
+
+  /// IDs de alunos já persistidos no Hive via scanner.
+  /// Usado por [ResultadoFinalScreen] para evitar duplicar esses registros.
+  final Set<String> savedAlunoIds;
 
   final bool loading;
   final String? errorMessage;
@@ -47,6 +52,7 @@ class GabaritoState {
     List<AlunoModel>? alunos,
     int? currentIndex,
     Map<String, List<String?>>? respostas,
+    Set<String>? savedAlunoIds,
     bool? loading,
     Object? errorMessage = _sentinel,
   }) {
@@ -54,6 +60,7 @@ class GabaritoState {
       alunos: alunos ?? this.alunos,
       currentIndex: currentIndex ?? this.currentIndex,
       respostas: respostas ?? this.respostas,
+      savedAlunoIds: savedAlunoIds ?? this.savedAlunoIds,
       loading: loading ?? this.loading,
       errorMessage: identical(errorMessage, _sentinel)
           ? this.errorMessage
@@ -116,6 +123,14 @@ class GabaritoViewModel extends Notifier<GabaritoState> {
     if (aluno == null) return;
     state = state.copyWith(
       respostas: {...state.respostas, aluno.id: List<String?>.from(scanResult)},
+    );
+  }
+
+  /// Registra que [alunoId] já foi salvo no Hive via scanner.
+  /// Evita duplicação quando [ResultadoFinalScreen] persistir as correções manuais.
+  void marcarSalvo(String alunoId) {
+    state = state.copyWith(
+      savedAlunoIds: {...state.savedAlunoIds, alunoId},
     );
   }
 
