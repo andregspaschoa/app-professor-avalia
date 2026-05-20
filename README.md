@@ -3,7 +3,7 @@
 [![Flutter](https://img.shields.io/badge/Flutter-3.41.6-02569B?logo=flutter)](https://flutter.dev)
 [![Dart](https://img.shields.io/badge/Dart-3.11.4-0175C2?logo=dart)](https://dart.dev)
 [![Coverage](https://img.shields.io/badge/coverage-71.6%25-brightgreen)](#testes)
-[![License](https://img.shields.io/badge/license-MIT-green)](LICENSE)
+[![License](https://img.shields.io/badge/license-All%20rights%20reserved-red)](LICENSE)
 
 > App Flutter para professores corrigirem provas de forma rápida — wizard step-by-step, scanner de cartão resposta (fake MVP) e dashboard com estatísticas.
 
@@ -199,4 +199,4 @@ GitHub Actions executa em cada push/PR para `main` e `develop`:
 
 ## Licença
 
-MIT © 2026 André Gabriel Sampaio Paschoa
+All rights reserved © 2026 Gabriel
