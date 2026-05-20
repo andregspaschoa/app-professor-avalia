@@ -2,12 +2,12 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:professor_avalia/features/dashboard/model/avaliacao_recente.dart';
 
 void main() {
-  final _scan = <String, dynamic>{
+  final scan = <String, dynamic>{
     'aluno_id': 'al_01',
     'nota_calculada': 8.0,
   };
 
-  final _avaliacao = AvaliacaoRecente(
+  final avaliacao = AvaliacaoRecente(
     avaliacaoId: 'ava_01',
     avaliacaoTitulo: 'Prova de Matemática',
     escolaNome: 'Escola Alpha',
@@ -15,12 +15,12 @@ void main() {
     totalAlunos: 30,
     mediaGeral: 7.5,
     dataUltimaCorrecao: DateTime(2025, 6, 1, 10, 0),
-    scans: [_scan],
+    scans: [scan],
   );
 
   group('AvaliacaoRecente.toMap()', () {
     test('serializa todos os campos corretamente', () {
-      final map = _avaliacao.toMap();
+      final map = avaliacao.toMap();
 
       expect(map['avaliacao_id'], 'ava_01');
       expect(map['avaliacao_titulo'], 'Prova de Matemática');
@@ -29,7 +29,7 @@ void main() {
       expect(map['total_alunos'], 30);
       expect(map['media_geral'], 7.5);
       expect(map['data_ultima_correcao'], '2025-06-01T10:00:00.000');
-      expect(map['scans'], [_scan]);
+      expect(map['scans'], [scan]);
     });
 
     test('dataUltimaCorrecao null → campo null no mapa', () {
@@ -48,16 +48,16 @@ void main() {
 
   group('AvaliacaoRecente.fromMap()', () {
     test('round-trip toMap → fromMap preserva todos os campos', () {
-      final map = _avaliacao.toMap();
+      final map = avaliacao.toMap();
       final resultado = AvaliacaoRecente.fromMap(map);
 
-      expect(resultado.avaliacaoId, _avaliacao.avaliacaoId);
-      expect(resultado.avaliacaoTitulo, _avaliacao.avaliacaoTitulo);
-      expect(resultado.escolaNome, _avaliacao.escolaNome);
-      expect(resultado.turmaNome, _avaliacao.turmaNome);
-      expect(resultado.totalAlunos, _avaliacao.totalAlunos);
-      expect(resultado.mediaGeral, _avaliacao.mediaGeral);
-      expect(resultado.dataUltimaCorrecao, _avaliacao.dataUltimaCorrecao);
+      expect(resultado.avaliacaoId, avaliacao.avaliacaoId);
+      expect(resultado.avaliacaoTitulo, avaliacao.avaliacaoTitulo);
+      expect(resultado.escolaNome, avaliacao.escolaNome);
+      expect(resultado.turmaNome, avaliacao.turmaNome);
+      expect(resultado.totalAlunos, avaliacao.totalAlunos);
+      expect(resultado.mediaGeral, avaliacao.mediaGeral);
+      expect(resultado.dataUltimaCorrecao, avaliacao.dataUltimaCorrecao);
       expect(resultado.scans.length, 1);
     });
 

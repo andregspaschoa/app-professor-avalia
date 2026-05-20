@@ -4,6 +4,8 @@ import 'package:go_router/go_router.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 
 import '../../core/constants/app_constants.dart';
+import '../../core/theme/score_colors.dart';
+import '../../shared/utils/app_snack_bar.dart';
 import '../../shared/widgets/gabarito_grid.dart';
 import '../avaliacao/avaliacao_viewmodel.dart';
 import '../dashboard/dashboard_viewmodel.dart';
@@ -153,8 +155,20 @@ class ResultadoScreen extends ConsumerWidget {
           .marcarSalvo(data['aluno_id'] as String);
       // Atualiza o dashboard com o novo scan.
       ref.read(dashboardViewModelProvider.notifier).refresh();
-    } catch (_) {
-      // Hive pode não estar aberto em ambiente de teste; ignora silenciosamente.
+      if (context.mounted) {
+        AppSnackBar.showSuccess(
+          context,
+          'Scan de ${data['aluno_nome']} salvo!',
+        );
+      }
+    } catch (e) {
+      if (context.mounted) {
+        AppSnackBar.showError(
+          context,
+          'Erro ao salvar o scan. Tente novamente.',
+        );
+      }
+      return;
     }
 
     // Aplica as respostas no GabaritoViewModel e avança para o próximo aluno
@@ -187,16 +201,13 @@ class _ScoreHeader extends StatelessWidget {
   final double nota;
   final double notaMaxima;
 
-  Color _notaColor() {
-    final pct = nota / notaMaxima;
-    if (pct >= 0.7) return Colors.green.shade700;
-    if (pct >= 0.5) return Colors.orange.shade700;
-    return Colors.red.shade700;
-  }
+  Color _notaColor(BuildContext context) =>
+      ScoreColors.of(context, nota, notaMaxima);
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final notaColor = _notaColor(context);
     return Container(
       padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 16),
       decoration: BoxDecoration(
@@ -228,25 +239,31 @@ class _ScoreHeader extends StatelessWidget {
             ),
           ),
           Container(
-            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
             decoration: BoxDecoration(
-              color: _notaColor().withAlpha(30),
-              borderRadius: BorderRadius.circular(12),
-              border: Border.all(color: _notaColor().withAlpha(100)),
+              color: notaColor,
+              borderRadius: BorderRadius.circular(16),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withAlpha(10),
+                  blurRadius: 6,
+                  offset: const Offset(0, 3),
+                ),
+              ],
             ),
             child: Column(
               children: [
                 Text(
                   nota.toStringAsFixed(1),
-                  style: theme.textTheme.displaySmall?.copyWith(
-                    color: _notaColor(),
+                  style: theme.textTheme.headlineMedium?.copyWith(
+                    color: Colors.white,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
                 Text(
                   'de ${notaMaxima.toStringAsFixed(0)}',
                   style: theme.textTheme.labelSmall?.copyWith(
-                    color: _notaColor().withAlpha(180),
+                    color: Colors.white.withAlpha(200),
                   ),
                 ),
               ],

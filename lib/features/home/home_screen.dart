@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../core/router/app_router.dart';
+import '../../core/router/app_routes.dart';
+import '../../core/theme/score_colors.dart';
 import '../auth/auth_viewmodel.dart';
 import '../dashboard/dashboard_viewmodel.dart';
 import '../dashboard/model/avaliacao_recente.dart';
@@ -125,25 +127,25 @@ class _MetricsSection extends StatelessWidget {
               label: 'Corrigidos',
               value: '${stats.totalCorrigidos}',
               color: Colors.green,
-            ),
+            ).animate(delay: 0.ms).fadeIn(duration: 250.ms).slideY(begin: 0.15, curve: Curves.easeOut),
             _MetricCard(
               icon: Icons.bar_chart_rounded,
               label: 'Média geral',
               value: stats.totalCorrigidos > 0 ? mediaFormatada : '—',
               color: Colors.blue,
-            ),
+            ).animate(delay: 70.ms).fadeIn(duration: 250.ms).slideY(begin: 0.15, curve: Curves.easeOut),
             _MetricCard(
               icon: Icons.warning_amber_rounded,
               label: 'Questão crítica',
               value: questao,
               color: Colors.orange,
-            ),
+            ).animate(delay: 140.ms).fadeIn(duration: 250.ms).slideY(begin: 0.15, curve: Curves.easeOut),
             _MetricCard(
               icon: Icons.history_rounded,
               label: 'Últimos scans',
               value: '${stats.scansRecentes.length}',
               color: Colors.purple,
-            ),
+            ).animate(delay: 210.ms).fadeIn(duration: 250.ms).slideY(begin: 0.15, curve: Curves.easeOut),
           ],
         ),
       ],
@@ -232,7 +234,13 @@ class _AvaliacaoSection extends StatelessWidget {
             ),
           )
         else
-          ...avaliacoes.map((a) => _AvaliacaoCard(avaliacao: a)),
+          ...List.generate(
+            avaliacoes.length,
+            (i) => _AvaliacaoCard(avaliacao: avaliacoes[i])
+                .animate(delay: (100 + 60 * i.clamp(0, 5)).ms)
+                .fadeIn(duration: 280.ms)
+                .slideY(begin: 0.1, curve: Curves.easeOut),
+          ),
       ],
     );
   }
@@ -242,16 +250,13 @@ class _AvaliacaoCard extends StatelessWidget {
   const _AvaliacaoCard({required this.avaliacao});
   final AvaliacaoRecente avaliacao;
 
-  Color _mediaColor(double media) {
-    if (media >= 7.0) return Colors.green.shade700;
-    if (media >= 5.0) return Colors.orange.shade700;
-    return Colors.red.shade700;
-  }
+  Color _mediaColor(BuildContext context, double media) =>
+      ScoreColors.of(context, media, 10.0);
 
   @override
   Widget build(BuildContext context) {
     final media = avaliacao.mediaGeral;
-    final mediaColor = _mediaColor(media);
+    final mediaColor = _mediaColor(context, media);
     final date = avaliacao.dataUltimaCorrecao;
     final dateLabel = date != null
         ? '${date.day.toString().padLeft(2, '0')}/${date.month.toString().padLeft(2, '0')}'

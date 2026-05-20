@@ -21,6 +21,8 @@ import '../../features/splash/splash_screen.dart';
 import '../../features/turma/turma_screen.dart';
 import '../../features/wizard/wizard_screen.dart';
 import '../../features/wizard/wizard_viewmodel.dart';
+import 'app_routes.dart';
+import 'route_transitions.dart';
 
 /// Chave do navigator aninhado do ShellRoute do wizard.
 ///
@@ -79,43 +81,45 @@ final appRouterProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: AppRoutes.splash,
         name: AppRoutes.splashName,
-        builder: (context, state) => const SplashScreen(),
+        pageBuilder: (context, state) => fadePage(state, const SplashScreen()),
       ),
       GoRoute(
         path: AppRoutes.login,
         name: AppRoutes.loginName,
-        builder: (context, state) => const LoginScreen(),
+        pageBuilder: (context, state) => fadePage(state, const LoginScreen()),
       ),
       GoRoute(
         path: AppRoutes.home,
         name: AppRoutes.homeName,
-        builder: (context, state) => const HomeScreen(),
+        pageBuilder: (context, state) => fadePage(state, const HomeScreen()),
       ),
       // ── Scanner (fora do wizard shell) ──────────────────────────────────────
       GoRoute(
         path: AppRoutes.scanner,
         name: AppRoutes.scannerName,
-        builder: (context, state) => const ScannerScreen(),
+        pageBuilder: (context, state) =>
+            slideRightPage(state, const ScannerScreen()),
       ),
       GoRoute(
         path: AppRoutes.scannerResultado,
         name: AppRoutes.scannerResultadoName,
-        builder: (context, state) => const ResultadoScreen(),
+        pageBuilder: (context, state) =>
+            slideRightPage(state, const ResultadoScreen()),
       ),
       GoRoute(
         path: AppRoutes.scanDetail,
         name: AppRoutes.scanDetailName,
-        builder: (context, state) {
+        pageBuilder: (context, state) {
           final data = state.extra as Map<String, dynamic>? ?? {};
-          return ScanDetailScreen(scanData: data);
+          return slideBottomPage(state, ScanDetailScreen(scanData: data));
         },
       ),
       GoRoute(
         path: AppRoutes.avaliacaoDetalhe,
         name: AppRoutes.avaliacaoDetalheName,
-        builder: (context, state) {
+        pageBuilder: (context, state) {
           final data = state.extra as Map<String, dynamic>? ?? {};
-          return AvaliacaoDetalheScreen(data: data);
+          return slideBottomPage(state, AvaliacaoDetalheScreen(data: data));
         },
       ),
       // ── Wizard shell ────────────────────────────────────────────────────────
@@ -129,42 +133,50 @@ final appRouterProvider = Provider<GoRouter>((ref) {
       ShellRoute(
         navigatorKey: _shellNavigatorKey,
         observers: [_WizardStepObserver(ref)],
-        builder: (context, state, child) => WizardScreen(child: child),
+        pageBuilder: (context, state, child) =>
+            slideRightPage(state, WizardScreen(child: child)),
         routes: [
           GoRoute(
             path: AppRoutes.wizardEscola,
             name: AppRoutes.wizardEscolaName,
-            builder: (context, state) => const EscolaScreen(),
+            pageBuilder: (context, state) =>
+                slideRightPage(state, const EscolaScreen()),
           ),
           GoRoute(
             path: AppRoutes.wizardTurma,
             name: AppRoutes.wizardTurmaName,
-            builder: (context, state) => const TurmaScreen(),
+            pageBuilder: (context, state) =>
+                slideRightPage(state, const TurmaScreen()),
           ),
           GoRoute(
             path: AppRoutes.wizardAvaliacao,
             name: AppRoutes.wizardAvaliacaoName,
-            builder: (context, state) => const AvaliacaoScreen(),
+            pageBuilder: (context, state) =>
+                slideRightPage(state, const AvaliacaoScreen()),
           ),
           GoRoute(
             path: AppRoutes.wizardAvaliacaoDetalhe,
             name: AppRoutes.wizardAvaliacaoDetalheName,
-            builder: (context, state) => const AvaliacaoDetailScreen(),
+            pageBuilder: (context, state) =>
+                slideRightPage(state, const AvaliacaoDetailScreen()),
           ),
           GoRoute(
             path: AppRoutes.wizardGabaritoProf,
             name: AppRoutes.wizardGabaritoProfName,
-            builder: (context, state) => const GabaritoProfessorScreen(),
+            pageBuilder: (context, state) =>
+                slideRightPage(state, const GabaritoProfessorScreen()),
           ),
           GoRoute(
             path: AppRoutes.wizardGabarito,
             name: AppRoutes.wizardGabaritoName,
-            builder: (context, state) => const GabaritoScreen(),
+            pageBuilder: (context, state) =>
+                slideRightPage(state, const GabaritoScreen()),
           ),
           GoRoute(
             path: AppRoutes.wizardResultado,
             name: AppRoutes.wizardResultadoName,
-            builder: (context, state) => const ResultadoFinalScreen(),
+            pageBuilder: (context, state) =>
+                slideRightPage(state, const ResultadoFinalScreen()),
           ),
         ],
       ),
@@ -214,55 +226,4 @@ class _RouterNotifier extends ChangeNotifier {
   }
 }
 
-/// Constantes de todas as rotas do app.
-///
-/// Uso com path:  context.go(AppRoutes.wizardEscola)
-/// Uso com name:  context.goNamed(AppRoutes.wizardEscolaName)
-abstract final class AppRoutes {
-  static const String splash = '/';
-  static const String splashName = 'splash';
-
-  static const String home = '/home';
-  static const String homeName = 'home';
-
-  static const String login = '/login';
-  static const String loginName = 'login';
-
-  // ── Wizard sub-routes ──────────────────────────────────────────────────────
-  // Ponto de entrada: /wizard/escola (step 1).
-  // Mantemos a constante `wizard` apontando para o step 1 por conveniência.
-  static const String wizard = wizardEscola;
-
-  static const String wizardEscola = '/wizard/escola';
-  static const String wizardEscolaName = 'wizard-escola';
-
-  static const String wizardTurma = '/wizard/turma';
-  static const String wizardTurmaName = 'wizard-turma';
-
-  static const String wizardAvaliacao = '/wizard/avaliacao';
-  static const String wizardAvaliacaoName = 'wizard-avaliacao';
-
-  static const String wizardAvaliacaoDetalhe = '/wizard/avaliacao/detalhe';
-  static const String wizardAvaliacaoDetalheName = 'wizard-avaliacao-detalhe';
-
-  static const String wizardGabaritoProf = '/wizard/gabarito/professor';
-  static const String wizardGabaritoProfName = 'wizard-gabarito-professor';
-
-  static const String wizardGabarito = '/wizard/gabarito';
-  static const String wizardGabaritoName = 'wizard-gabarito';
-
-  static const String wizardResultado = '/wizard/resultado';
-  static const String wizardResultadoName = 'wizard-resultado';
-
-  static const String scanner = '/scanner';
-  static const String scannerName = 'scanner';
-
-  static const String scannerResultado = '/scanner/resultado';
-  static const String scannerResultadoName = 'scanner-resultado';
-
-  static const String scanDetail = '/scan/detail';
-  static const String scanDetailName = 'scan-detail';
-
-  static const String avaliacaoDetalhe = '/avaliacao/detalhe';
-  static const String avaliacaoDetalheName = 'avaliacao-detalhe';
-}
+// AppRoutes foi extraído para app_routes.dart

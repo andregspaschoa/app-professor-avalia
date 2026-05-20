@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../core/theme/score_colors.dart';
 import '../../shared/widgets/gabarito_grid.dart';
 
 /// Tela de detalhe de um scan salvo — acesso retrospectivo pelo professor.
@@ -17,13 +18,6 @@ class ScanDetailScreen extends StatelessWidget {
   const ScanDetailScreen({super.key, required this.scanData});
 
   final Map<String, dynamic> scanData;
-
-  Color _notaColor(double nota, double max) {
-    final pct = max > 0 ? nota / max : 0.0;
-    if (pct >= 0.7) return Colors.green.shade700;
-    if (pct >= 0.5) return Colors.orange.shade700;
-    return Colors.red.shade700;
-  }
 
   void _showContestarDialog(BuildContext context) {
     showDialog<void>(
@@ -74,7 +68,7 @@ class ScanDetailScreen extends StatelessWidget {
             '${date.minute.toString().padLeft(2, '0')}'
         : '';
 
-    final notaColor = _notaColor(nota, notaMax);
+    final notaColor = ScoreColors.of(context, nota, notaMax);
 
     return Scaffold(
       appBar: AppBar(

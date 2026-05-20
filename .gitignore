@@ -61,3 +61,6 @@ proposta app professor avalia.md
 .env
 .env.*
 
+# Others
+
+_local/

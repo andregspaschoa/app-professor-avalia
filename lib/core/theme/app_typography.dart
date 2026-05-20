@@ -38,10 +38,21 @@ abstract final class AppTypography {
           fontWeight: FontWeight.w400,
           color: AppColors.textSecondaryLight,
         ),
+        titleSmall: GoogleFonts.poppins(
+          fontSize: 14,
+          fontWeight: FontWeight.w500,
+          color: AppColors.textPrimaryLight,
+        ),
         labelLarge: GoogleFonts.poppins(
           fontSize: 14,
           fontWeight: FontWeight.w600,
           letterSpacing: 0.5,
+        ),
+        labelSmall: GoogleFonts.poppins(
+          fontSize: 11,
+          fontWeight: FontWeight.w500,
+          letterSpacing: 0.5,
+          color: AppColors.textSecondaryLight,
         ),
         bodySmall: GoogleFonts.poppins(
           fontSize: 12,
@@ -59,9 +70,13 @@ abstract final class AppTypography {
             .copyWith(color: AppColors.textPrimaryDark),
         titleMedium: lightTextTheme.titleMedium!
             .copyWith(color: AppColors.textPrimaryDark),
+        titleSmall: lightTextTheme.titleSmall!
+            .copyWith(color: AppColors.textPrimaryDark),
         bodyLarge: lightTextTheme.bodyLarge!
             .copyWith(color: AppColors.textPrimaryDark),
         bodyMedium: lightTextTheme.bodyMedium!
+            .copyWith(color: AppColors.textSecondaryDark),
+        labelSmall: lightTextTheme.labelSmall!
             .copyWith(color: AppColors.textSecondaryDark),
         bodySmall: lightTextTheme.bodySmall!
             .copyWith(color: AppColors.textSecondaryDark),

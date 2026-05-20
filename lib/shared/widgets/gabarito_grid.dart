@@ -212,7 +212,7 @@ class _AltChip extends StatelessWidget {
         ? Colors.white
         : (selected
             ? theme.colorScheme.onPrimaryContainer
-            : theme.colorScheme.onSurface.withAlpha(100));
+            : theme.colorScheme.onSurface.withAlpha(180));
 
     return Container(
       width: 44,

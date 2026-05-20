@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../core/router/app_router.dart';
+import '../../core/router/app_routes.dart';
+import '../../core/theme/app_colors.dart';
+import '../../core/theme/score_colors.dart';
 import 'model/avaliacao_recente.dart';
 
 /// Tela de detalhe de uma avaliação agrupada — exibida ao tocar em um card
@@ -49,16 +51,11 @@ class _AvaliacaoHeader extends StatelessWidget {
 
   final AvaliacaoRecente avaliacao;
 
-  Color _mediaColor(double media) {
-    if (media >= 7.0) return Colors.green.shade700;
-    if (media >= 5.0) return Colors.orange.shade700;
-    return Colors.red.shade700;
-  }
-
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final media = avaliacao.mediaGeral;
+    final mediaColor = ScoreColors.of(context, media, 10.0);
 
     return Container(
       padding: const EdgeInsets.fromLTRB(16, 12, 16, 16),
@@ -108,7 +105,7 @@ class _AvaliacaoHeader extends StatelessWidget {
               _StatChip(
                 icon: Icons.bar_chart_rounded,
                 label: 'Média ${media.toStringAsFixed(1)}',
-                color: _mediaColor(media),
+                color: mediaColor,
               ),
             ],
           ),
@@ -129,23 +126,22 @@ class _StatChip extends StatelessWidget {
   Widget build(BuildContext context) {
     final c = color ?? Theme.of(context).colorScheme.primary;
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
       decoration: BoxDecoration(
-        color: c.withAlpha(20),
+        color: c.withAlpha(30),
         borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: c.withAlpha(60)),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
           Icon(icon, size: 14, color: c),
-          const SizedBox(width: 4),
+          const SizedBox(width: 6),
           Text(
             label,
             style: TextStyle(
               fontSize: 12,
               color: c,
-              fontWeight: FontWeight.w500,
+              fontWeight: FontWeight.w600,
             ),
           ),
         ],
@@ -160,13 +156,6 @@ class _AlunoScanCard extends StatelessWidget {
   const _AlunoScanCard({required this.scan});
 
   final Map<String, dynamic> scan;
-
-  Color _notaColor(double nota, double max) {
-    final pct = max > 0 ? nota / max : 0.0;
-    if (pct >= 0.7) return Colors.green.shade700;
-    if (pct >= 0.5) return Colors.orange.shade700;
-    return Colors.red.shade700;
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -183,7 +172,7 @@ class _AlunoScanCard extends StatelessWidget {
             ' ${date.hour.toString().padLeft(2, '0')}:${date.minute.toString().padLeft(2, '0')}'
         : '';
 
-    final notaColor = _notaColor(nota, notaMax);
+    final notaColor = ScoreColors.of(context, nota, notaMax);
 
     return Card(
       margin: EdgeInsets.zero,
@@ -213,8 +202,8 @@ class _AlunoScanCard extends StatelessWidget {
                 padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
                 decoration: BoxDecoration(
                   color: origem == 'scanner'
-                      ? Colors.blue.withAlpha(25)
-                      : Colors.orange.withAlpha(25),
+                      ? AppColors.primary.withAlpha(30)
+                      : AppColors.warning.withAlpha(30),
                   borderRadius: BorderRadius.circular(4),
                 ),
                 child: Text(
@@ -223,8 +212,8 @@ class _AlunoScanCard extends StatelessWidget {
                     fontSize: 10,
                     fontWeight: FontWeight.w500,
                     color: origem == 'scanner'
-                        ? Colors.blue.shade700
-                        : Colors.orange.shade700,
+                        ? AppColors.primary
+                        : AppColors.warning,
                   ),
                 ),
               ),

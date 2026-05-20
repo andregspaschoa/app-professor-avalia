@@ -4,7 +4,9 @@ import 'package:go_router/go_router.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 
 import '../../core/constants/app_constants.dart';
-import '../../core/router/app_router.dart';
+import '../../core/router/app_routes.dart';
+import '../../core/theme/score_colors.dart';
+import '../../shared/utils/app_snack_bar.dart';
 import '../avaliacao/avaliacao_viewmodel.dart';
 import '../dashboard/dashboard_viewmodel.dart';
 import '../gabarito/gabarito_viewmodel.dart';
@@ -95,13 +97,14 @@ class ResultadoFinalScreen extends ConsumerWidget {
                     notaMaxima: notaMaxima,
                   );
                   if (!context.mounted) return;
-                  // Navega para home. O reset do wizard é feito pelo HomeScreen
-                  // antes de iniciar uma nova correção — evita rebuild do
-                  // WizardShell com estado zerado enquanto ainda está na árvore.
+                  // Captura o messenger antes de navegar — ele vive acima do
+                  // router e persiste após context.go().
+                  final messenger = ScaffoldMessenger.of(context);
                   context.go(AppRoutes.home);
-                  // HomeScreen ainda está vivo na pilha (foi push, não go),
-                  // então o provider está ativo — atualiza o dashboard.
                   ref.read(dashboardViewModelProvider.notifier).refresh();
+                  messenger.showSnackBar(
+                    AppSnackBar.buildSuccess('Resultados salvos com sucesso!'),
+                  );
                 },
               ),
             ),
@@ -176,12 +179,8 @@ class _ResumoHeader extends StatelessWidget {
   final double notaMaxima;
   final String avaliacaoTitulo;
 
-  Color _mediaColor() {
-    final pct = media / notaMaxima;
-    if (pct >= 0.7) return Colors.green.shade700;
-    if (pct >= 0.5) return Colors.orange.shade700;
-    return Colors.red.shade700;
-  }
+  Color _mediaColor(BuildContext context) =>
+      ScoreColors.of(context, media, notaMaxima);
 
   @override
   Widget build(BuildContext context) {
@@ -217,7 +216,7 @@ class _ResumoHeader extends StatelessWidget {
               _StatChip(
                 label: 'Média da turma',
                 value: media.toStringAsFixed(1),
-                color: _mediaColor(),
+                color: _mediaColor(context),
               ),
             ],
           ),
@@ -243,11 +242,10 @@ class _StatChip extends StatelessWidget {
     final theme = Theme.of(context);
     return Expanded(
       child: Container(
-        padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 12),
+        padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
         decoration: BoxDecoration(
-          color: color.withAlpha(25),
-          borderRadius: BorderRadius.circular(10),
-          border: Border.all(color: color.withAlpha(80)),
+          color: color.withAlpha(30),
+          borderRadius: BorderRadius.circular(16),
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -262,7 +260,7 @@ class _StatChip extends StatelessWidget {
             Text(
               label,
               style: theme.textTheme.labelSmall?.copyWith(
-                color: color.withAlpha(180),
+                color: color.withAlpha(200),
               ),
             ),
           ],
@@ -295,17 +293,13 @@ class _AlunoCard extends StatelessWidget {
 
   final _AlunoResultado resultado;
 
-  Color _chipColor() {
-    final pct = resultado.nota / resultado.notaMaxima;
-    if (pct >= 0.7) return Colors.green.shade600;
-    if (pct >= 0.5) return Colors.orange.shade600;
-    return Colors.red.shade600;
-  }
+  Color _chipColor(BuildContext context) =>
+      ScoreColors.of(context, resultado.nota, resultado.notaMaxima);
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final color = _chipColor();
+    final color = _chipColor(context);
     return Card(
       child: ListTile(
         leading: CircleAvatar(
@@ -327,16 +321,20 @@ class _AlunoCard extends StatelessWidget {
             color: theme.colorScheme.onSurface.withAlpha(140),
           ),
         ),
-        trailing: Chip(
-          label: Text(
+        trailing: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+          decoration: BoxDecoration(
+            color: color,
+            borderRadius: BorderRadius.circular(20),
+          ),
+          child: Text(
             resultado.nota.toStringAsFixed(1),
-            style: TextStyle(
-              color: color,
+            style: const TextStyle(
+              color: Colors.white,
               fontWeight: FontWeight.bold,
+              fontSize: 13,
             ),
           ),
-          backgroundColor: color.withAlpha(25),
-          side: BorderSide(color: color.withAlpha(80)),
         ),
       ),
     );

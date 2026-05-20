@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../core/error/failures.dart';
-import '../../core/router/app_router.dart';
+import '../../core/router/app_routes.dart';
 import '../../shared/widgets/empty_state_widget.dart';
 import '../../shared/widgets/error_state_widget.dart';
+import '../../shared/widgets/skeleton_loader.dart';
 import '../wizard/wizard_viewmodel.dart';
 import 'model/turma_model.dart';
 import 'turma_viewmodel.dart';
@@ -23,7 +25,7 @@ class TurmaScreen extends ConsumerWidget {
     final state = ref.watch(turmaViewModelProvider);
 
     return state.when(
-      loading: () => const Center(child: CircularProgressIndicator()),
+      loading: () => const SkeletonListView(),
       error: (error, _) => ErrorStateWidget(
         message:
             error is Failure ? error.message : 'Ocorreu um erro. Tente novamente.',
@@ -40,7 +42,10 @@ class TurmaScreen extends ConsumerWidget {
           padding: const EdgeInsets.all(16),
           itemCount: turmas.length,
           separatorBuilder: (_, _) => const SizedBox(height: 8),
-          itemBuilder: (context, index) => _TurmaCard(turma: turmas[index]),
+          itemBuilder: (context, index) => _TurmaCard(turma: turmas[index])
+              .animate(delay: (50 * index.clamp(0, 7)).ms)
+              .fadeIn(duration: 280.ms)
+              .slideX(begin: 0.12, curve: Curves.easeOut),
         );
       },
     );

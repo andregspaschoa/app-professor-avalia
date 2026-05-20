@@ -77,6 +77,21 @@ abstract final class AppTheme {
             color: AppColors.textSecondaryLight,
           ),
         ),
+        snackBarTheme: const SnackBarThemeData(
+          behavior: SnackBarBehavior.floating,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.all(Radius.circular(12)),
+          ),
+        ),
+        chipTheme: ChipThemeData(
+          side: BorderSide.none,
+          shape: const StadiumBorder(),
+          padding: const EdgeInsets.symmetric(horizontal: 4),
+          labelStyle: GoogleFonts.poppins(
+            fontSize: 12,
+            fontWeight: FontWeight.w500,
+          ),
+        ),
       );
 
   static ThemeData get dark => ThemeData(
@@ -148,6 +163,21 @@ abstract final class AppTheme {
             fontSize: 14,
             fontWeight: FontWeight.w400,
             color: AppColors.textSecondaryDark,
+          ),
+        ),
+        snackBarTheme: const SnackBarThemeData(
+          behavior: SnackBarBehavior.floating,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.all(Radius.circular(12)),
+          ),
+        ),
+        chipTheme: ChipThemeData(
+          side: BorderSide.none,
+          shape: const StadiumBorder(),
+          padding: const EdgeInsets.symmetric(horizontal: 4),
+          labelStyle: GoogleFonts.poppins(
+            fontSize: 12,
+            fontWeight: FontWeight.w500,
           ),
         ),
       );

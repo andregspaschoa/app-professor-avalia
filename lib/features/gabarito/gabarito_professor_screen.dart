@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../core/router/app_router.dart';
+import '../../core/router/app_routes.dart';
 import '../../shared/widgets/gabarito_grid.dart';
 import '../avaliacao/avaliacao_viewmodel.dart';
 import '../scanner/scanner_viewmodel.dart';

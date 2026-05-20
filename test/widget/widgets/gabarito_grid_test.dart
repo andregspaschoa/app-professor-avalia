@@ -30,7 +30,7 @@ void main() {
         _buildGrid(
           totalQuestoes: 5,
           respostas: List.filled(5, null),
-          onSelect: (_, __) {},
+          onSelect: (i, v) {},
         ),
       );
 
@@ -44,7 +44,7 @@ void main() {
         _buildGrid(
           totalQuestoes: 2,
           respostas: [null, null],
-          onSelect: (_, __) {},
+          onSelect: (i, v) {},
         ),
       );
 
@@ -89,7 +89,7 @@ void main() {
           totalQuestoes: 2,
           respostas: ['A', null],
           readOnly: true,
-          onSelect: (_, __) => called = true,
+          onSelect: (i, v) => called = true,
         ),
       );
 
@@ -109,7 +109,7 @@ void main() {
           respostas: ['A', 'C'],          // Q1: acerto; Q2: erro
           readOnly: true,
           gabarito: ['A', 'B'],
-          onSelect: (_, __) {},
+          onSelect: (i, v) {},
         ),
       );
 

@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../core/error/failures.dart';
-import '../../core/router/app_router.dart';
+import '../../core/router/app_routes.dart';
+import '../../core/theme/app_colors.dart';
 import '../../shared/widgets/empty_state_widget.dart';
 import '../../shared/widgets/error_state_widget.dart';
+import '../../shared/widgets/skeleton_loader.dart';
 import '../wizard/wizard_viewmodel.dart';
 import 'avaliacao_viewmodel.dart';
 import 'model/avaliacao_model.dart';
@@ -18,7 +21,7 @@ class AvaliacaoScreen extends ConsumerWidget {
     final state = ref.watch(avaliacaoViewModelProvider);
 
     return state.when(
-      loading: () => const Center(child: CircularProgressIndicator()),
+      loading: () => const SkeletonListView(),
       error: (error, _) => ErrorStateWidget(
         message: error is Failure
             ? error.message
@@ -37,7 +40,10 @@ class AvaliacaoScreen extends ConsumerWidget {
           itemCount: avaliacoes.length,
           separatorBuilder: (_, _) => const SizedBox(height: 8),
           itemBuilder: (context, index) =>
-              _AvaliacaoCard(avaliacao: avaliacoes[index]),
+              _AvaliacaoCard(avaliacao: avaliacoes[index])
+                  .animate(delay: (50 * index.clamp(0, 7)).ms)
+                  .fadeIn(duration: 280.ms)
+                  .slideX(begin: 0.12, curve: Curves.easeOut),
         );
       },
     );
@@ -49,17 +55,27 @@ class _AvaliacaoCard extends ConsumerWidget {
 
   final AvaliacaoModel avaliacao;
 
-  Color _chipBackgroundColor(String status) => switch (status) {
-        'aplicada' => Colors.blue.shade100,
-        'corrigida' => Colors.green.shade100,
-        _ => Colors.grey.shade200,
-      };
+  Color _chipBackgroundColor(BuildContext context, String status) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    return switch (status) {
+      'corrigida' =>
+        isDark ? AppColors.chipSuccessBgDark : AppColors.chipSuccessBgLight,
+      'aplicada' =>
+        isDark ? AppColors.chipInfoBgDark : AppColors.chipInfoBgLight,
+      _ => isDark ? const Color(0xFF3D3D3D) : Colors.grey.shade200,
+    };
+  }
 
-  Color _chipLabelColor(String status) => switch (status) {
-        'aplicada' => Colors.blue.shade900,
-        'corrigida' => Colors.green.shade900,
-        _ => Colors.grey.shade700,
-      };
+  Color _chipLabelColor(BuildContext context, String status) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    return switch (status) {
+      'corrigida' =>
+        isDark ? AppColors.chipSuccessTextDark : AppColors.chipSuccessTextLight,
+      'aplicada' =>
+        isDark ? AppColors.chipInfoTextDark : AppColors.chipInfoTextLight,
+      _ => isDark ? const Color(0xFFBDBDBD) : Colors.grey.shade700,
+    };
+  }
 
   String _statusLabel(String status) => switch (status) {
         'rascunho' => 'Rascunho',
@@ -90,10 +106,10 @@ class _AvaliacaoCard extends ConsumerWidget {
           label: Text(
             _statusLabel(status),
             style: theme.textTheme.labelSmall?.copyWith(
-              color: _chipLabelColor(status),
+              color: _chipLabelColor(context, status),
             ),
           ),
-          backgroundColor: _chipBackgroundColor(status),
+          backgroundColor: _chipBackgroundColor(context, status),
           side: BorderSide.none,
           padding: const EdgeInsets.symmetric(horizontal: 4),
         ),
